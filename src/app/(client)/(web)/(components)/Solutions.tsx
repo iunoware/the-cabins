@@ -471,39 +471,41 @@ export default function Solutions() {
     {
       title: "Security Cabins",
       description: "Compact, durable guard booths with panoramic visibility.",
-      href: "/products/security-cabins",
+      href: "/products",
       badge: "POPULAR",
       illustration: SecurityCabinSVG,
     },
     {
       title: "Portable Cabins",
       description: "Relocatable site offices ready for immediate use.",
-      href: "/products/portable-cabins",
+      href: "/products",
       illustration: PortableCabinSVG,
     },
     {
       title: "Office Cabins",
       description: "Insulated, climate-ready workspaces with premium finishes.",
-      href: "/products/office-cabins",
+      href: "/products",
       illustration: OfficeCabinSVG,
     },
     {
       title: "Accommodation Cabins",
       description: "Comfortable labour & staff housing built for the climate.",
-      href: "/products/accommodation-cabins",
+      href: "/products",
       illustration: AccommodationCabinSVG,
     },
     {
       title: "Container Offices",
-      description: "Heavy-duty shipping containers repurposed into premium workspaces.",
-      href: "/products/container-offices",
+      description:
+        "Heavy-duty shipping containers repurposed into premium workspaces.",
+      href: "/products",
       badge: "NEW",
       illustration: ContainerOfficeSVG,
     },
     {
       title: "Container Buildings",
-      description: "Scalable, modular multi-level structures for fast deployment.",
-      href: "/products/container-buildings",
+      description:
+        "Scalable, modular multi-level structures for fast deployment.",
+      href: "/products",
       illustration: ContainerBuildingSVG,
     },
   ];

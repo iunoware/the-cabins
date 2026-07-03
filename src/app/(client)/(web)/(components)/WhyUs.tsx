@@ -60,24 +60,20 @@ export default function WhyUs() {
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
+      const gridChildren = gridRef.current ? gsap.utils.toArray(gridRef.current.children) : [];
+
       if (prefersReducedMotion) {
-        gsap.set(
-          [labelRef.current, headingRef.current, gridRef.current?.children],
-          {
-            opacity: 1,
-            y: 0,
-          },
-        );
+        gsap.set([labelRef.current, headingRef.current], { opacity: 1, y: 0 });
+        if (gridChildren.length > 0) {
+          gsap.set(gridChildren, { opacity: 1, y: 0 });
+        }
         return;
       }
 
-      gsap.set(
-        [labelRef.current, headingRef.current, gridRef.current?.children],
-        {
-          opacity: 0,
-          y: 24,
-        },
-      );
+      gsap.set([labelRef.current, headingRef.current], { opacity: 0, y: 24 });
+      if (gridChildren.length > 0) {
+        gsap.set(gridChildren, { opacity: 0, y: 24 });
+      }
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -99,7 +95,7 @@ export default function WhyUs() {
           "-=0.3",
         )
         .to(
-          gridRef.current?.children,
+          gridChildren,
           {
             opacity: 1,
             y: 0,
