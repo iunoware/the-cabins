@@ -1,10 +1,24 @@
+import Hero from "./(components)/Hero";
+import ContactInfo from "./(components)/Form";
+import ContactForm from "./(components)/ContactForm";
+import Cta from "@/components/Cta";
+
 export default function ContactPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] py-10">
-      <h1 className="text-3xl font-bold text-brand-dark">Contact Us</h1>
-      <p className="mt-4 text-brand-gray text-center max-w-md">
-        Get in touch with us for your modular cabin requirements.
-      </p>
-    </div>
+    <>
+      <Hero title="Contact Us" currentPage="Contact" />
+      <section className="bg-white py-24">
+        <div className="mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <ContactInfo />
+          <ContactForm />
+        </div>
+      </section>
+      <Cta
+        title="Build With a Partner You Can Trust"
+        description="Join 1,500+ clients who chose The Cabins for modular excellence across the UAE."
+        buttonLabel="Contact Our Team"
+        buttonHref="/contact"
+      />
+    </>
   );
 }
