@@ -50,7 +50,9 @@ export default function HowWeWork() {
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
-      const gridChildren = gridRef.current ? gsap.utils.toArray(gridRef.current.children) : [];
+      const gridChildren = gridRef.current
+        ? gsap.utils.toArray(gridRef.current.children)
+        : [];
 
       if (prefersReducedMotion) {
         gsap.set([labelRef.current, headingRef.current], { opacity: 1, y: 0 });
