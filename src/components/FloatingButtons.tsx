@@ -35,32 +35,32 @@ export default function FloatingButtons() {
 
   return (
     <>
-      <div className="fixed right-4 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-3">
+      <div className="fixed right-2 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-3">
         <a
           href="https://wa.me/971526856240"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"
-          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-white shadow-lg transition hover:bg-green-600"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-green-500 text-white shadow-lg transition hover:bg-green-600"
         >
-          <WhatsAppIcon className="h-7 w-7" />
+          <WhatsAppIcon className="h-5 w-5" />
         </a>
 
         <a
           href="tel:+971526856240"
           aria-label="Call us"
-          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-white shadow-lg transition hover:bg-neutral-800"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-white shadow-lg transition hover:bg-neutral-800"
         >
-          <PhoneIcon className="h-6 w-6" />
+          <PhoneIcon className="h-5 w-5" />
         </a>
 
         <Link
           href="/contact"
           rel="noopener noreferrer"
           aria-label="View brochure"
-          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600 text-white shadow-lg transition hover:bg-red-700"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-600 text-white shadow-lg transition hover:bg-red-700"
         >
-          <DocumentTextIcon className="h-6 w-6" />
+          <DocumentTextIcon className="h-5 w-5" />
         </Link>
       </div>
 
@@ -68,9 +68,9 @@ export default function FloatingButtons() {
         type="button"
         onClick={scrollToTop}
         aria-label="Back to top"
-        className={`${showTopButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} transition-all duration-300 fixed bottom-6 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-black text-white shadow-lg hover:bg-neutral-800`}
+        className={`${showTopButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} transition-all duration-300 fixed bottom-6 right-2 z-50 flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white shadow-lg hover:bg-neutral-800`}
       >
-        <ChevronUpIcon className="h-6 w-6" />
+        <ChevronUpIcon className="h-5 w-5" />
       </button>
     </>
   );
