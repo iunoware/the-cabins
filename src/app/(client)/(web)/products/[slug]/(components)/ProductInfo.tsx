@@ -18,33 +18,40 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   useGSAP(
     () => {
       const tl = gsap.timeline();
-      
+
       tl.fromTo(
         ".info-fade",
         { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }
+        { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" },
       )
-      .fromTo(
-        ".spec-card",
-        { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.4, stagger: 0.08, ease: "back.out(1.2)" },
-        "-=0.2"
-      )
-      .fromTo(
-        ".action-btn",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" },
-        "-=0.2"
-      );
+        .fromTo(
+          ".spec-card",
+          { opacity: 0, scale: 0.95 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.08,
+            ease: "back.out(1.2)",
+          },
+          "-=0.2",
+        )
+        .fromTo(
+          ".action-btn",
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" },
+          "-=0.2",
+        );
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   const whatsappMessage = encodeURIComponent(
-    `Hi, I am interested in getting a quote/info for the product: ${product.title}.`
+    `Hi, I am interested in getting a quote/info for the product: ${product.title}.`,
   );
   // Standard UAE contact link or placeholder
-  const whatsappUrl = `https://wa.me/971501234567?text=${whatsappMessage}`;
+  // href="https://wa.me/971526856240"
+  const whatsappUrl = `https://wa.me/971526856240?text=${whatsappMessage}`;
 
   return (
     <div ref={containerRef} className="flex flex-col h-full justify-between">
@@ -82,36 +89,52 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
             <div className="flex items-center gap-2 text-gray-400">
               <Maximize2 className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Size</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                Size
+              </span>
             </div>
-            <span className="text-sm font-extrabold text-[#111217]">{product.size}</span>
+            <span className="text-sm font-extrabold text-[#111217]">
+              {product.size}
+            </span>
           </div>
 
           {/* Card 2: Capacity */}
           <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
             <div className="flex items-center gap-2 text-gray-400">
               <Users className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Capacity</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                Capacity
+              </span>
             </div>
-            <span className="text-sm font-extrabold text-[#111217]">{product.capacity}</span>
+            <span className="text-sm font-extrabold text-[#111217]">
+              {product.capacity}
+            </span>
           </div>
 
           {/* Card 3: Material */}
           <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
             <div className="flex items-center gap-2 text-gray-400">
               <HardHat className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Material</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                Material
+              </span>
             </div>
-            <span className="text-sm font-extrabold text-[#111217] line-clamp-1">{product.material}</span>
+            <span className="text-sm font-extrabold text-[#111217] line-clamp-1">
+              {product.material}
+            </span>
           </div>
 
           {/* Card 4: Warranty */}
           <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
             <div className="flex items-center gap-2 text-gray-400">
               <Award className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Warranty</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                Warranty
+              </span>
             </div>
-            <span className="text-sm font-extrabold text-[#111217]">{product.warranty}</span>
+            <span className="text-sm font-extrabold text-[#111217]">
+              {product.warranty}
+            </span>
           </div>
         </div>
       </div>
