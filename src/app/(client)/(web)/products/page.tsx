@@ -1,10 +1,18 @@
+import Hero from "./(components)/Hero";
+import Products from "./(components)/Products";
+// import CTA from "@/components/CTA";
+
 export default function ProductsPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] py-10">
-      <h1 className="text-3xl font-bold text-brand-dark">Our Products</h1>
-      <p className="mt-4 text-brand-gray text-center max-w-md">
-        Explore our premium range of modular cabins and architectural designs.
-      </p>
-    </div>
+    <>
+      <Hero title="Our Products" currentPage="Products" />;
+      <Products />
+      {/* <Cta
+        title="Need a Custom Solution?"
+        description="We build cabins to your exact requirements. Tell us your brief and we'll engineer it."
+        buttonLabel="Get a Quote"
+        buttonHref="/contact"
+      /> */}
+    </>
   );
 }
