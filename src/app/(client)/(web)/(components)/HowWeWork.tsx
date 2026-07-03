@@ -285,10 +285,13 @@ export default function HowWeWork() {
       ref={sectionRef}
       className="relative overflow-hidden bg-black py-20 md:py-28"
     >
-      <div className="mx-auto w-full max-w-[1280px] px-4 md:px-6">
-        <div className="mx-auto mb-16 max-w-[700px] text-center">
-          <div ref={labelRef} className="mb-5 flex items-center justify-center gap-3">
-            <span className="h-[2px] w-8 shrink-0 rounded-full bg-[#EF4444]" />
+      <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+        <div className="mx-auto mb-16 max-w-175 text-center">
+          <div
+            ref={labelRef}
+            className="mb-5 flex items-center justify-center gap-3"
+          >
+            <span className="h-0.5 w-8 shrink-0 rounded-full bg-[#EF4444]" />
             <span className="text-[12px] font-bold uppercase tracking-[0.3em] text-[#EF4444]">
               How We Work
             </span>
@@ -317,7 +320,9 @@ export default function HowWeWork() {
                 <span className="absolute left-0 top-0 h-full w-10 bg-[#DC2626]" />
               </div>
 
-              <h3 className="mb-3 text-[17px] font-bold text-white">{step.title}</h3>
+              <h3 className="mb-3 text-[17px] font-bold text-white">
+                {step.title}
+              </h3>
 
               <p className="max-w-[260px] text-[14px] leading-relaxed text-gray-400">
                 {step.description}

@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "The Cabins",
   description: "The Cabins",
+  icons: {
+    icon: "/images/logo.jpeg", // Points to public/icon.png
+  },
 };
 
 export default function RootLayout({
