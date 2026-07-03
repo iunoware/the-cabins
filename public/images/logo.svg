@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 50" width="280" height="50">
+  <!-- Left vertical red line -->
+  <line x1="12" y1="8" x2="12" y2="42" stroke="#e31b23" stroke-width="1.8" />
+  
+  <!-- "THE C" text -->
+  <text x="22" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" fill="#111111" letter-spacing="0.5">THE C</text>
+  
+  <!-- Stylized "A" triangle -->
+  <polygon points="76,8 84,24 81.2,24 76,13.5 70.8,24 68,24" fill="#e31b23" />
+  
+  <!-- "BINS" text -->
+  <text x="86" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" fill="#111111" letter-spacing="0.5">BINS</text>
+  
+  <!-- Subtitle "TRANSFORMING THE MODULAR INDUSTRY" -->
+  <text x="22" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="6.2" font-weight="700" fill="#777777" letter-spacing="1.2">TRANSFORMING THE MODULAR INDUSTRY</text>
+</svg>
