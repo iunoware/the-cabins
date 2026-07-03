@@ -1,5 +1,6 @@
-import TopBar from "@/src/app/(client)/(web)/(components)/(layout)/TopBar";
-import Navbar from "@/src/app/(client)/(web)/(components)/(layout)/Navbar";
+import TopBar from "@/components/TopBar";
+import Navbar from "@/components/Navbar";
+import FloatingContact from "./(components)/FloatingContact";
 
 export default function WebLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,6 +9,7 @@ export default function WebLayout({ children }: { children: React.ReactNode }) {
       <TopBar />
       <Navbar />
       <main className="grow">{children}</main>
+      <FloatingContact />
     </div>
   );
 }
