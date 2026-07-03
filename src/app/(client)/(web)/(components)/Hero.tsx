@@ -6,7 +6,13 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import { Phone, WhatsApp, FileText, ArrowRight, Star } from "./(layout)/Icons";
+import {
+  Phone,
+  WhatsApp,
+  FileText,
+  ArrowRight,
+  Star,
+} from "../../../../../components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -21,7 +27,6 @@ export default function Hero() {
   const paraRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const trustRef = useRef<HTMLDivElement>(null);
-  const floatingButtonsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -40,7 +45,6 @@ export default function Hero() {
             paraRef.current,
             buttonsRef.current?.children,
             trustRef.current,
-            floatingButtonsRef.current?.children,
           ],
           { opacity: 1, scale: 1, x: 0, y: 0 },
         );
@@ -69,7 +73,6 @@ export default function Hero() {
           paraRef.current,
           buttonsRef.current?.children,
           trustRef.current,
-          floatingButtonsRef.current?.children,
         ],
         { opacity: 0 },
       );
@@ -151,15 +154,7 @@ export default function Hero() {
         "-=0.2",
       );
 
-      // Floating contact rounded squares slide-in
-      if (floatingButtonsRef.current) {
-        tl.fromTo(
-          floatingButtonsRef.current.children,
-          { opacity: 0, x: 60 },
-          { opacity: 1, x: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" },
-          "-=0.5",
-        );
-      }
+
 
       // 5. ScrollTrigger parallax effects
       gsap.to(bgImageRef.current, {
@@ -195,7 +190,7 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative w-full h-screen min-h-215 max-md:h-[90vh]! overflow-hidden flex items-center select-none bg-black"
+      className="relative w-full h-screen max-md:h-[90vh] overflow-hidden flex items-center select-none bg-black"
       aria-label="Welcome Hero Section"
     >
       {/* Background Image Container */}
@@ -208,7 +203,7 @@ export default function Hero() {
           alt="Premium Corporate Modular Cabin Solutions in UAE"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover max-h-screen object-center"
         />
       </div>
 
@@ -287,37 +282,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Floating Vertical Contact Buttons */}
-      <div
-        ref={floatingButtonsRef}
-        className="fixed right-4 md:right-6 top-[55%] -translate-y-1/2 z-40 flex flex-col gap-3.5"
-      >
-        <a
-          href="https://wa.me/971526856240"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Contact us on WhatsApp"
-          className="w-11 h-11 sm:w-12 sm:h-12 bg-[#24D366] text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-108 hover:shadow-[0_4px_16px_rgba(36,211,102,0.4)] focus:outline-none focus:ring-2 focus:ring-[#24D366] cursor-pointer"
-        >
-          <WhatsApp className="w-5 h-5" />
-        </a>
-        <a
-          href="tel:+971526856240"
-          aria-label="Call us now"
-          className="w-11 h-11 sm:w-12 sm:h-12 bg-brand-dark/90 backdrop-blur-sm border border-white/10 text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-108 hover:shadow-[0_4px_16px_rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 focus:ring-white cursor-pointer"
-        >
-          <Phone className="w-5 h-5 text-white" />
-        </a>
-        <a
-          href="/brochure.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Download corporate brochure"
-          className="w-11 h-11 sm:w-12 sm:h-12 bg-[#D81E2C] text-white rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-108 hover:shadow-[0_4px_16px_rgba(216,30,44,0.4)] focus:outline-none focus:ring-2 focus:ring-[#D81E2C] cursor-pointer"
-        >
-          <FileText className="w-5 h-5 text-white" />
-        </a>
-      </div>
+
     </section>
   );
 }
