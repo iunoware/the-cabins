@@ -65,7 +65,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block">
               <Image
-                src="/logo.png"
+                src="/images/logo.jpeg"
                 alt="The Cabins"
                 width={115}
                 height={55}
@@ -74,8 +74,8 @@ export default function Footer() {
             </Link>
 
             <p className="mt-8 max-w-90 text-sm leading-[1.55] tracking-wide text-[#9b9ba6]">
-              Premium modular & cabin solutions across the United Arab Emirates. Designed,
-              manufactured and delivered with uncompromising quality.
+              Premium modular & cabin solutions across the United Arab Emirates.
+              Designed, manufactured and delivered with uncompromising quality.
             </p>
 
             <div className="mt-7 flex items-center gap-1">
@@ -186,10 +186,10 @@ export default function Footer() {
         <div className="flex flex-col gap-4 pt-3 text-sm md:flex-row md:items-center md:justify-between">
           <p>
             © 2026{" "}
-            <a href="https://iunoware.com/" className="font-bold">
+            {/* <a href="https://iunoware.com/" className="font-bold">
               Iunoware Pvt Ltd
-            </a>{" "}
-            All rights reserved.
+            </a> */}{" "}
+            The Cabins. All rights reserved.
           </p>
 
           <p>Premium Modular Solutions · Dubai · United Arab Emirates</p>
@@ -228,7 +228,15 @@ function InstagramIcon({ className = "" }: IconProps) {
         fill="white"
       />
 
-      <rect x="11" y="11" width="26" height="26" rx="8" stroke="white" strokeWidth="3" />
+      <rect
+        x="11"
+        y="11"
+        width="26"
+        height="26"
+        rx="8"
+        stroke="white"
+        strokeWidth="3"
+      />
     </svg>
   );
 }
@@ -261,7 +269,10 @@ function GmailIcon({ className = "" }: IconProps) {
     >
       <rect width="48" height="48" rx="8" fill="white" />
 
-      <path d="M8 16V35H15V21.5L24 28.5L33 21.5V35H40V16L24 28L8 16Z" fill="#EA4335" />
+      <path
+        d="M8 16V35H15V21.5L24 28.5L33 21.5V35H40V16L24 28L8 16Z"
+        fill="#EA4335"
+      />
 
       <path
         d="M8 16L24 28L40 16V13C40 11.3 38 10.4 36.8 11.5L24 21L11.2 11.5C10 10.4 8 11.3 8 13V16Z"
@@ -272,7 +283,11 @@ function GmailIcon({ className = "" }: IconProps) {
 
       <path d="M40 16V35H33V21.5L40 16Z" fill="#34A853" />
 
-      <path d="M24 28L15 21.5V35H33V21.5L24 28Z" fill="#4285F4" opacity="0.15" />
+      <path
+        d="M24 28L15 21.5V35H33V21.5L24 28Z"
+        fill="#4285F4"
+        opacity="0.15"
+      />
     </svg>
   );
 }
