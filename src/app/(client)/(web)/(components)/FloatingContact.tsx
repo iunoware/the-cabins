@@ -3,14 +3,16 @@
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Phone, WhatsApp, FileText } from "@/components/Icons";
+import { Phone, WhatsApp, FileText } from "@/src/components/Icons";
 
 export default function FloatingContact() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
 
       if (prefersReducedMotion) {
         gsap.set(containerRef.current?.children || [], { opacity: 1, x: 0 });
@@ -20,10 +22,10 @@ export default function FloatingContact() {
       gsap.fromTo(
         containerRef.current?.children || [],
         { opacity: 0, x: 60 },
-        { opacity: 1, x: 0, duration: 0.6, stagger: 0.1, delay: 0.8, ease: "power2.out" }
+        { opacity: 1, x: 0, duration: 0.6, stagger: 0.1, delay: 0.8, ease: "power2.out" },
       );
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (

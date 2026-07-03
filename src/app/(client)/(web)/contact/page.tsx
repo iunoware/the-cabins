@@ -1,7 +1,7 @@
 import Hero from "./(components)/Hero";
 import ContactInfo from "./(components)/Form";
 import ContactForm from "./(components)/ContactForm";
-import Cta from "@/components/Cta";
+import Cta from "@/src/components/Cta";
 
 export default function ContactPage() {
   return (

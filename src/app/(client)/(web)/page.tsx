@@ -6,7 +6,7 @@ import HowWeWork from "./(components)/HowWeWork";
 import RecentProjects from "./(components)/RecentProjects";
 import ClientsMarquee from "./(components)/Clents";
 import Testimonials from "./(components)/Testimonial";
-import Cta from "@/components/Cta";
+import Cta from "@/src/components/Cta";
 
 export default function Home() {
   return (
