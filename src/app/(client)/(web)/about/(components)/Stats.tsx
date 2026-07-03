@@ -34,15 +34,21 @@ export default function StatsSection() {
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
+      const gridChildren = gridRef.current ? gsap.utils.toArray(gridRef.current.children) : [];
+
       if (prefersReducedMotion) {
-        gsap.set(gridRef.current?.children, { opacity: 1, y: 0 });
+        if (gridChildren.length > 0) {
+          gsap.set(gridChildren, { opacity: 1, y: 0 });
+        }
         numberRefs.current.forEach((el, i) => {
           if (el) el.textContent = statsData[i].value.toLocaleString();
         });
         return;
       }
 
-      gsap.set(gridRef.current?.children, { opacity: 0, y: 24 });
+      if (gridChildren.length > 0) {
+        gsap.set(gridChildren, { opacity: 0, y: 24 });
+      }
 
       ScrollTrigger.create({
         trigger: sectionRef.current,
@@ -50,13 +56,15 @@ export default function StatsSection() {
         once: true,
         onEnter: () => {
           // Fade/rise the stat blocks in
-          gsap.to(gridRef.current?.children, {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.12,
-            ease: "power2.out",
-          });
+          if (gridChildren.length > 0) {
+            gsap.to(gridChildren, {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.12,
+              ease: "power2.out",
+            });
+          }
 
           // Count each number up from 0 to its target value
           statsData.forEach((stat, i) => {

@@ -54,6 +54,8 @@ export default function AboutIntro() {
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
+      const valuesChildren = valuesRef.current ? gsap.utils.toArray(valuesRef.current.children) : [];
+
       if (prefersReducedMotion) {
         gsap.set(
           [
@@ -62,11 +64,13 @@ export default function AboutIntro() {
             labelRef.current,
             headingRef.current,
             descRef.current,
-            valuesRef.current?.children,
             buttonRef.current,
           ],
           { opacity: 1, y: 0, x: 0, scale: 1 },
         );
+        if (valuesChildren.length > 0) {
+          gsap.set(valuesChildren, { opacity: 1, y: 0 });
+        }
         return;
       }
 
@@ -75,11 +79,13 @@ export default function AboutIntro() {
           labelRef.current,
           headingRef.current,
           descRef.current,
-          valuesRef.current?.children,
           buttonRef.current,
         ],
         { opacity: 0, y: 24 },
       );
+      if (valuesChildren.length > 0) {
+        gsap.set(valuesChildren, { opacity: 0, y: 24 });
+      }
       gsap.set(imageWrapRef.current, { opacity: 0, x: -40 });
       gsap.set(badgeRef.current, { opacity: 0, y: 20, scale: 0.9 });
 
@@ -118,7 +124,7 @@ export default function AboutIntro() {
           "-=0.4",
         )
         .to(
-          valuesRef.current?.children,
+          valuesChildren,
           {
             opacity: 1,
             y: 0,
