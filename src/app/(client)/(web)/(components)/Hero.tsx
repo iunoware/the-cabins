@@ -12,7 +12,7 @@ import {
   FileText,
   ArrowRight,
   Star,
-} from "../../../../../components/Icons";
+} from "../../../../components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -154,8 +154,6 @@ export default function Hero() {
         "-=0.2",
       );
 
-
-
       // 5. ScrollTrigger parallax effects
       gsap.to(bgImageRef.current, {
         yPercent: 12,
@@ -239,9 +237,9 @@ export default function Hero() {
             ref={paraRef}
             className="text-white/82 text-[18px] md:text-5 leading-[1.8] max-w-155 mb-10 font-medium"
           >
-            We design, manufacture and deliver high-quality modular cabins,
-            portable units and container buildings — engineered for speed, built
-            to last, and finished to perfection.
+            We design, manufacture and deliver high-quality modular cabins, portable units
+            and container buildings — engineered for speed, built to last, and finished to
+            perfection.
           </p>
 
           {/* Staggered action buttons */}
@@ -268,21 +266,16 @@ export default function Hero() {
           <div ref={trustRef} className="flex items-center gap-3">
             <div className="flex items-center gap-0.5 shrink-0">
               {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="w-4.5 h-4.5 fill-amber-400 text-amber-400"
-                />
+                <Star key={i} className="w-4.5 h-4.5 fill-amber-400 text-amber-400" />
               ))}
             </div>
             <span className="text-[14px] md:text-[15px] text-white/80 font-medium">
-              Trusted by <span className="font-bold text-white">2,500+</span>{" "}
-              clients across all 7 Emirates
+              Trusted by <span className="font-bold text-white">2,500+</span> clients
+              across all 7 Emirates
             </span>
           </div>
         </div>
       </div>
-
-
     </section>
   );
 }

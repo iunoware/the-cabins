@@ -136,18 +136,14 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={`nav-link-item relative font-sans text-sm lg:text-[15px] font-medium tracking-tight py-1.5 transition-colors duration-200 focus:outline-none group ${
-                  isActive
-                    ? "text-[#EF4444]"
-                    : "text-brand-gray hover:text-[#EF4444]"
+                  isActive ? "text-[#EF4444]" : "text-brand-gray hover:text-[#EF4444]"
                 }`}
               >
                 {item.name}
                 {/* Center-outward animated underline (visible always for active, hover grows from center) */}
                 <span
                   className={`absolute -bottom-0.5 left-0 w-full h-0.5 bg-[#EF4444] transition-transform duration-250 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] origin-center ${
-                    isActive
-                      ? "scale-x-100"
-                      : "scale-x-0 group-hover:scale-x-100"
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   }`}
                 />
               </Link>
@@ -214,9 +210,7 @@ export default function Navbar() {
       {/* MOBILE DROPDOWN NAVIGATION PANEL */}
       <div
         className={`absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl md:hidden transition-all duration-300 ease-in-out z-30 ${
-          isOpen
-            ? "max-h-87.5 opacity-100 visible"
-            : "max-h-0 opacity-0 invisible"
+          isOpen ? "max-h-87.5 opacity-100 visible" : "max-h-0 opacity-0 invisible"
         }`}
         aria-hidden={!isOpen}
       >
