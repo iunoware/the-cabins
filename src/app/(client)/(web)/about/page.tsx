@@ -3,7 +3,7 @@ import About from "./(components)/About";
 import StatsSection from "./(components)/Stats";
 import WhyUs from "./(components)/WhyUs";
 import HowWeWork from "./(components)/HowWeWork";
-import Cta from "@/components/Cta";
+import Cta from "@/src/components/Cta";
 
 export default function AboutPage() {
   return (

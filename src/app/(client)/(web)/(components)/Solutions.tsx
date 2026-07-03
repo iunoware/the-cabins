@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import { ArrowRight } from "../../../../../components/Icons";
+import { ArrowRight } from "../../../../components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -291,14 +291,7 @@ const AccommodationCabinSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line
-      x1="134"
-      y1="65"
-      x2="134"
-      y2="89"
-      stroke="#1E293B"
-      strokeWidth="2.5"
-    />
+    <line x1="134" y1="65" x2="134" y2="89" stroke="#1E293B" strokeWidth="2.5" />
 
     {/* Window 4 */}
     <rect
@@ -310,14 +303,7 @@ const AccommodationCabinSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line
-      x1="158"
-      y1="65"
-      x2="158"
-      y2="89"
-      stroke="#1E293B"
-      strokeWidth="2.5"
-    />
+    <line x1="158" y1="65" x2="158" y2="89" stroke="#1E293B" strokeWidth="2.5" />
   </svg>
 );
 
@@ -343,19 +329,9 @@ const ContainerOfficeSVG = () => (
     />
 
     {/* Corrugation lines */}
-    {[55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185].map(
-      (x) => (
-        <line
-          key={x}
-          x1={x}
-          y1="52"
-          x2={x}
-          y2="133"
-          stroke="#334155"
-          strokeWidth="2"
-        />
-      ),
-    )}
+    {[55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185].map((x) => (
+      <line key={x} x1={x} y1="52" x2={x} y2="133" stroke="#334155" strokeWidth="2" />
+    ))}
 
     {/* Office cutout pane */}
     <rect
@@ -435,14 +411,7 @@ const ContainerBuildingSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line
-      x1="100"
-      y1="102"
-      x2="100"
-      y2="130"
-      stroke="#1E293B"
-      strokeWidth="3"
-    />
+    <line x1="100" y1="102" x2="100" y2="130" stroke="#1E293B" strokeWidth="3" />
 
     {/* Top Container */}
     <rect
@@ -526,16 +495,14 @@ export default function Solutions() {
     },
     {
       title: "Container Offices",
-      description:
-        "Heavy-duty shipping containers repurposed into premium workspaces.",
+      description: "Heavy-duty shipping containers repurposed into premium workspaces.",
       href: "/products/container-offices",
       badge: "NEW",
       illustration: ContainerOfficeSVG,
     },
     {
       title: "Container Buildings",
-      description:
-        "Scalable, modular multi-level structures for fast deployment.",
+      description: "Scalable, modular multi-level structures for fast deployment.",
       href: "/products/container-buildings",
       illustration: ContainerBuildingSVG,
     },
@@ -578,12 +545,7 @@ export default function Solutions() {
 
       // 3. Setup initial state
       gsap.set(
-        [
-          labelRef.current,
-          descRef.current,
-          gridRef.current?.children,
-          buttonRef.current,
-        ],
+        [labelRef.current, descRef.current, gridRef.current?.children, buttonRef.current],
         {
           opacity: 0,
         },
@@ -673,10 +635,7 @@ export default function Solutions() {
         {/* Header container */}
         <div className="text-center max-w-[650px] mx-auto mb-16">
           {/* Accent Label */}
-          <div
-            ref={labelRef}
-            className="flex items-center justify-center gap-3 mb-4"
-          >
+          <div ref={labelRef} className="flex items-center justify-center gap-3 mb-4">
             <span className="w-8 h-[2px] bg-[#EF4444] rounded-full shrink-0" />
             <span className="text-[12px] font-bold tracking-[0.3em] uppercase text-[#EF4444]">
               OUR SOLUTIONS
@@ -688,8 +647,7 @@ export default function Solutions() {
             ref={headingRef}
             className="text-[32px] sm:text-[40px] md:text-[48px] font-black text-black leading-tight tracking-tight uppercase mb-6"
           >
-            Modular Solutions for{" "}
-            <span className="text-[#EF4444]">Every Need</span>
+            Modular Solutions for <span className="text-[#EF4444]">Every Need</span>
           </h2>
 
           {/* Description */}
@@ -697,8 +655,7 @@ export default function Solutions() {
             ref={descRef}
             className="text-gray-500 text-[16px] md:text-[18px] leading-[1.7] font-medium"
           >
-            engineered, manufactured and finished in-house to international
-            standards.
+            engineered, manufactured and finished in-house to international standards.
           </p>
         </div>
 
