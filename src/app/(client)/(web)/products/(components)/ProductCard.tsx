@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.title}
           </h2>
 
-          <p className="mt-3 min-h-[54px] text-sm leading-6 text-gray-500">
+          <p className="mt-3 min-h-13.5 text-sm leading-6 text-gray-500">
             {product.description}
           </p>
 
@@ -52,7 +52,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="text-left text-sm font-extrabold text-[#e71f32] hover:text-[#e71f32]/80 transition flex items-center gap-1 group"
           >
             <span>View Details</span>
-            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">
+              →
+            </span>
           </Link>
 
           <p className="whitespace-nowrap text-sm font-extrabold text-[#111217]">
