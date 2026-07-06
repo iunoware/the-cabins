@@ -38,7 +38,9 @@ export default function CTASection({
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
-      const textChildren = textRef.current ? gsap.utils.toArray(textRef.current.children) : [];
+      const textChildren = textRef.current
+        ? gsap.utils.toArray(textRef.current.children)
+        : [];
 
       if (prefersReducedMotion) {
         gsap.set(cardRef.current, { opacity: 1, scale: 1, y: 0 });
@@ -84,17 +86,13 @@ export default function CTASection({
   );
 
   return (
-    <section
-      ref={sectionRef}
-      className={`relative bg-white py-16 md:py-10 ${className}`}
-    >
+    <section ref={sectionRef} className={`relative bg-white py-16 md:py-10 ${className}`}>
       <div className="max-w-275 w-full mx-auto px-4 md:px-6">
         <div
           ref={cardRef}
           className="relative rounded-[28px] overflow-hidden px-8 py-12 sm:px-12 sm:py-14 md:px-16 flex flex-col md:flex-row md:items-center md:justify-between gap-8"
           style={{
-            background:
-              "linear-gradient(90deg, #C41E2A 0%, #7A1218 45%, #0A0A0A 100%)",
+            background: "linear-gradient(90deg, #C41E2A 0%, #7A1218 45%, #0A0A0A 100%)",
           }}
         >
           {/* Text content */}

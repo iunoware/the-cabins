@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/src/data/products";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 interface ProductCardProps {
   product: Product;
@@ -13,7 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <article className="overflow-hidden rounded-3xl border border-gray-200 bg-white transition hover:-translate-y-1 hover:shadow-lg flex flex-col h-full">
       <div className="relative flex h-48 items-center justify-center bg-[#eef0f4] shrink-0">
         {product.badge && (
-          <span className="absolute left-4 top-4 rounded-full bg-[#111217] px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white">
+          <span className="absolute z-50 left-4 top-4 rounded-full bg-[#111217] px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white">
             {product.badge}
           </span>
         )}
@@ -41,7 +42,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-[#e71f32] font-bold">⌗</span>
             <span>{product.size}</span>
 
-            <span className="text-[#e71f32] font-bold">♙</span>
+            {/* <span className="text-[#e71f32] font-bold">♙</span> */}
+            <span className="text-[#e71f32] font-bold">
+              <UserIcon className="h-4 w-4" />
+            </span>
             <span>{product.capacity}</span>
           </div>
         </div>
