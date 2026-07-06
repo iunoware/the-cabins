@@ -1,18 +1,18 @@
 import Hero from "./(components)/Hero";
 import Products from "./(components)/Products";
-// import CTA from "@/components/CTA";
+import Cta from "../../../../components/Cta";
 
 export default function ProductsPage() {
   return (
     <>
       <Hero title="Our Products" currentPage="Products" />;
       <Products />
-      {/* <Cta
+      <Cta
         title="Need a Custom Solution?"
         description="We build cabins to your exact requirements. Tell us your brief and we'll engineer it."
         buttonLabel="Get a Quote"
         buttonHref="/contact"
-      /> */}
+      />
     </>
   );
 }
