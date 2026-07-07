@@ -1,6 +1,6 @@
 import Hero from "./(components)/Hero";
 import Products from "./(components)/Products";
-import Cta from "../../../../components/Cta";
+import Cta from "@/src/components/Cta";
 
 export default function ProductsPage() {
   return (

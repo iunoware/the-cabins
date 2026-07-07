@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import { ArrowRight } from "../../../../components/Icons";
+import { ArrowRight } from "@/src/components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);

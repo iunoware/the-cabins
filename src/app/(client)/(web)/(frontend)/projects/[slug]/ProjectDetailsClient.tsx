@@ -6,7 +6,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ArrowLeftIcon, MapPinIcon, PhotoIcon } from "@heroicons/react/24/outline";
-import type { Project } from "../../../../../data/projects";
+import type { Project } from "@/src/data/projects";
 
 gsap.registerPlugin(useGSAP);
 
