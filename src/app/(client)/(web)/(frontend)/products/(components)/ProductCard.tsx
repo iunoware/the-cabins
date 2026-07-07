@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/src/data/products";
+import { ProductFamily } from "@/src/data/products";
 import { UserIcon } from "@heroicons/react/24/outline";
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductFamily;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -40,13 +40,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-gray-500">
             <span className="text-[#e71f32] font-bold">⌗</span>
-            <span>{product.size}</span>
+            <span>{product.sizeRange}</span>
 
             {/* <span className="text-[#e71f32] font-bold">♙</span> */}
             <span className="text-[#e71f32] font-bold">
               <UserIcon className="h-4 w-4" />
             </span>
-            <span>{product.capacity}</span>
+            <span>{product.capacityRange}</span>
           </div>
         </div>
 
@@ -62,10 +62,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Link>
 
           <p className="whitespace-nowrap text-sm font-extrabold text-[#111217]">
-            <span className="text-[#e71f32]">→</span> {product.price}
+            <span className="text-[#e71f32]">→</span> {product.startingPrice}
           </p>
         </div>
       </div>
     </article>
   );
 }
+

@@ -31,8 +31,9 @@ export interface FAQ {
 
 export interface Product {
   id: number;
+  familySlug?: string; // The slug of the family it belongs to
+  slug: string;       // The variant slug (e.g. "small", "medium", "standard")
   title: string;
-  slug: string;
   category: Category;
   description: string; // fallback short description
   shortDescription: string;
@@ -49,6 +50,21 @@ export interface Product {
   specifications: Specification[];
   applications: Application[];
   faq: FAQ[];
+}
+
+export interface ProductFamily {
+  id: number;
+  title: string;          // Name of the family, e.g. "Security Guard Cabin"
+  slug: string;           // Slug of the family, e.g. "security-guard-cabin"
+  category: Category;     // Category, e.g. "Security Cabins"
+  description: string;    // Fallback description for the card
+  shortDescription: string; // Short description
+  startingPrice: string;  // e.g. "From AED 9,500"
+  images: string[];       // Images for the family hero/thumbnail
+  sizeRange: string;      // e.g. "1.5×1.5 m - 2.4×2.4 m"
+  capacityRange: string;  // e.g. "1 - 2 persons" or "1 person"
+  badge?: string;         // e.g. "Popular" or "Premium"
+  variants: Product[];    // The variants of this family
 }
 
 export const categories: (Category | "All Products")[] = [
@@ -96,12 +112,12 @@ const getDefaultFAQs = (): FAQ[] => [
   },
 ];
 
-export const products: Product[] = [
+const baseProducts = [
   {
     id: 1,
     title: "Security Guard Cabin",
     slug: "security-guard-cabin",
-    category: "Security Cabins",
+    category: "Security Cabins" as Category,
     description: "Single-occupancy booth with 360° glazing and AC-ready insulation.",
     shortDescription: "A durable, single-occupancy security cabin with 360-degree glass visibility, fully insulated and pre-wired for immediate onsite setup.",
     fullDescription: "Designed for premium gate control and perimeter security, the Security Guard Cabin is engineered to keep security personnel comfortable and alert in harsh environments. Featuring heavy-duty structural steel frame construction, 50mm polyurethane sandwich wall panels, and high-visibility tinted sliding aluminum windows on all four sides. This unit comes complete with an integrated writing desk, internal LED lighting, power sockets, and a dedicated structural shelf for an air conditioning unit. Easy to lift, relocate, and deploy within minutes of delivery.",
@@ -144,7 +160,7 @@ export const products: Product[] = [
     id: 2,
     title: "Watchman Booth",
     slug: "watchman-booth",
-    category: "Security Cabins",
+    category: "Security Cabins" as Category,
     description: "Compact entry-gate booth with signage strip and sliding window.",
     shortDescription: "A modern watchman booth built with a highly rigid steel frame, wide sliding windows, and a dedicated external banner strip for custom company branding.",
     fullDescription: "The Watchman Booth is the perfect compact checkpost unit for gated facilities, logistics parks, and parking structures. Built to last, it incorporates high-grade thermal barrier wall panels that significantly reduce solar heat gain. The cabin is equipped with high-durability floor finishes and heavy-duty corner castings for crane loading. Its ergonomic workspace design ensures maximum operator comfort while occupying a minimal footprint on site.",
@@ -184,7 +200,7 @@ export const products: Product[] = [
     id: 3,
     title: "Standard Portable Cabin",
     slug: "standard-portable-cabin",
-    category: "Portable Cabins",
+    category: "Portable Cabins" as Category,
     description: "The all-purpose relocatable cabin - fast to deploy, easy to move.",
     shortDescription: "A versatile, highly durable portable cabin that serves as a temporary office, storage space, or multi-purpose utility room anywhere in the UAE.",
     fullDescription: "Our Standard Portable Cabin is the industry benchmark for flexible onsite space. Fabricated with highly insulated walls and structural roof panels, this relocatable cabin provides a comfortable, quiet, and dust-tight environment. It is engineered with four-point crane lifting lugs and forklift pockets for quick logistics. Ideal for short-term projects, temporary expansions, and remote operation hubs.",
@@ -223,7 +239,7 @@ export const products: Product[] = [
     id: 4,
     title: "Portable Site Office",
     slug: "portable-site-office",
-    category: "Portable Cabins",
+    category: "Portable Cabins" as Category,
     description: "Ready-to-work cabin with desk-ready power and data provisions.",
     shortDescription: "A professional, move-in-ready portable office cabin designed to keep engineering and supervisory teams working efficiently in the field.",
     fullDescription: "The Portable Site Office is engineered with productivity in mind. Equipped with pre-wired trunking for power and Ethernet network connections, high-performance LED lighting, and thick polyurethane foam insulation to keep the hot desert climate out. It features an open-plan layout that accommodates desks, filing cabinets, and small meeting tables with ease.",
@@ -261,7 +277,7 @@ export const products: Product[] = [
     id: 5,
     title: "Executive Office Cabin",
     slug: "executive-office-cabin",
-    category: "Office Cabins",
+    category: "Office Cabins" as Category,
     description: "Insulated, climate-controlled workspace with premium interior finish.",
     shortDescription: "A premium executive-class workspace, featuring luxury interior finishes, sound insulation, and dedicated private facilities.",
     fullDescription: "Make a strong impression on clients and team members alike with our Executive Office Cabin. Crafted to meet the highest corporate standards, this modular workspace includes gypsum board walls, acoustic ceiling tiles, energy-efficient LED spot lighting, and high-quality timber or wood-look flooring. Ideal for project managers, executive directors, and client meeting spaces on construction sites, commercial developments, or event venues.",
@@ -301,7 +317,7 @@ export const products: Product[] = [
     id: 6,
     title: "Modular Office Suite",
     slug: "modular-office-suite",
-    category: "Office Cabins",
+    category: "Office Cabins" as Category,
     description: "Multi-room office configuration with meeting space and pantry.",
     shortDescription: "A complete multi-room modular complex containing individual private offices, an open workstation area, kitchen pantry, and washroom facility.",
     fullDescription: "Our Modular Office Suite offers a cost-effective alternative to permanent building extensions. Prefabricated in a controlled factory setting and assembled on site, this complex contains multiple functional zones. Standard layouts include two executive offices, a centralized staff workstation area, a fully fitted pantry cupboard, and an integrated toilet stall. Perfect for rapidly expanding businesses, field command centers, or permanent site operations.",
@@ -339,7 +355,7 @@ export const products: Product[] = [
     id: 7,
     title: "Labour Accommodation",
     slug: "labour-accommodation",
-    category: "Accommodation",
+    category: "Accommodation" as Category,
     description: "Durable bunk-ready housing engineered for the regional climate.",
     shortDescription: "Cost-effective, highly durable, and compliant modular bunkhouses designed to comfortably accommodate workforce teams in industrial sectors.",
     fullDescription: "Our Labour Accommodation cabins are built to meet the stringent local municipal standards for workforce housing. Engineered with heavy-duty structural steel and extra-strength wall panels to withstand heavy daily use. The layouts maximize bed capacity while maintaining strict comfort and safety regulations. Fully pre-configured for bunk bed layout, locker storage, and high-efficiency ventilation systems.",
@@ -376,7 +392,7 @@ export const products: Product[] = [
     id: 8,
     title: "Staff Accommodation",
     slug: "staff-accommodation",
-    category: "Accommodation",
+    category: "Accommodation" as Category,
     description: "Partitioned living quarters with private rooms and shared facilities.",
     shortDescription: "Premium modular hostel units featuring partitioned bedrooms, shared bathrooms, and dedicated leisure space for technical staff.",
     fullDescription: "Provide high-quality housing for your engineers, supervisors, and administrative personnel. The Staff Accommodation cabin features private partitioned bedrooms, built-in wardrobes, a communal living and dining area, and attached washroom units. Engineered for maximum thermal comfort and sound dampening, creating a relaxing home-away-from-home.",
@@ -413,7 +429,7 @@ export const products: Product[] = [
     id: 9,
     title: "Portable Toilet Block",
     slug: "portable-toilet-block",
-    category: "Toilet Cabins",
+    category: "Toilet Cabins" as Category,
     description: "Fully-plumbed multi-stall washroom with ventilation and water tank.",
     shortDescription: "A self-contained, easily sanitized multi-stall toilet cabin with complete plumbing, water heaters, and built-in exhaust systems.",
     fullDescription: "Our Portable Toilet Block is designed for heavy usage at construction sites, public events, and industrial yards. Manufactured with water-resistant wall panels, high-grade marine-grade plumbing, and slip-resistant floor finishes. Each stall is fitted with high-quality ceramic sanitary fixtures, tissue holders, mirrors, and privacy indicators. Ready to connect to local sewerage and water supplies.",
@@ -451,7 +467,7 @@ export const products: Product[] = [
     id: 10,
     title: "Ablution & Shower Unit",
     slug: "ablution-shower-unit",
-    category: "Toilet Cabins",
+    category: "Toilet Cabins" as Category,
     description: "Combined ablution, shower and washroom block for labour camps.",
     shortDescription: "A dual-purpose sanitary unit combining shower stalls and ablution taps, built specifically to meet the high hygiene demands of remote worksites.",
     fullDescription: "The Ablution & Shower Unit is a high-capacity, robust solution designed to support large workforces. Combining dedicated shower cubicles, WC stalls, and a continuous stainless steel ablution wash trough. It features anti-corrosive finishes, commercial-grade taps, and high-efficiency water drainage to facilitate rapid cleaning and sanitation.",
@@ -472,7 +488,7 @@ export const products: Product[] = [
     specifications: [
       { label: "Overall Size", value: "8.00m (L) x 4.00m (W) x 2.65m (H)" },
       { label: "Base Frame", value: "Extra-braced steel chassis with epoxy paint" },
-      { label: "Stalls Layout", value: "4x Shower stalls with curtains, 4x WC stalls, 6-tap ablution counter" },
+      { label: "Stalls Layout", value: "4x Shower stalls with cancellations, 4x WC stalls, 6-tap ablution counter" },
       { label: "Floor System", value: "FRP waterproof floor pan with non-skid textured pattern" },
       { label: "Hot Water", value: "2x 80L heavy-duty electric water heaters" },
       { label: "Piping", value: "Corrosion-resistant copper and PPR fittings throughout" },
@@ -488,7 +504,7 @@ export const products: Product[] = [
     id: 11,
     title: "20ft Container Office",
     slug: "20ft-container-office",
-    category: "Container Offices",
+    category: "Container Offices" as Category,
     description: "Converted shipping container — rugged, secure and rapid to deploy.",
     shortDescription: "A secure, ultra-rugged site office constructed from a recycled 20ft ISO cargo container, offering high security and transport ease.",
     fullDescription: "Our 20ft Container Office is converted from genuine marine shipping containers. This ensures unparalleled strength, structural security, and weathering resistance. Fitted with high-density mineral wool insulation, gypsum boards, dual-glazed sliding windows, and a heavy-duty steel lock door. Ideal for high-risk sites, security control centers, or remote construction hubs.",
@@ -526,7 +542,7 @@ export const products: Product[] = [
     id: 12,
     title: "40ft Container Office",
     slug: "40ft-container-office",
-    category: "Container Offices",
+    category: "Container Offices" as Category,
     description: "Spacious container workspace with partitions, glazing and HVAC.",
     shortDescription: "A spacious 40ft converted shipping container office containing executive cabins, workstation room, and a small built-in pantry.",
     fullDescription: "The 40ft Container Office provides a massive 29 square meters of climate-controlled, premium corporate workspace. Built using heavy Corten steel panels, it features internal drywall partitions dividing the space into an executive cabin and a team workspace. The interior is finished to a high spec with recessed LED panels, AC cooling, and multi-network routing.",
@@ -563,7 +579,7 @@ export const products: Product[] = [
     id: 13,
     title: "Double-Stack Building",
     slug: "double-stack-building",
-    category: "Container Buildings",
+    category: "Container Buildings" as Category,
     description: "Two-storey stacked container complex with external stair access.",
     shortDescription: "An efficient, two-storey modular office or accommodation complex featuring stackable frame connections and external steel stairs.",
     fullDescription: "Maximize your office space without expanding your footprint. The Double-Stack Building uses heavy-duty steel columns and specialized corner connectors to safely stack two levels. Comes complete with a heavy steel external staircase, handrails, safety platform, and dynamic canopy structures. Engineered to withstand high-velocity wind loads.",
@@ -600,7 +616,7 @@ export const products: Product[] = [
     id: 14,
     title: "Container Building Block",
     slug: "container-building-block",
-    category: "Container Buildings",
+    category: "Container Buildings" as Category,
     description: "Modular container cluster for large-scale worker camps and sites.",
     shortDescription: "A multi-unit interlocking modular structure designed to house large corporate teams, worker colonies, or temporary clinics on-site.",
     fullDescription: "The Container Building Block is a scalable, modular solution for massive projects. By interlocking multiple container cabins horizontally and vertically, we create large workspaces, canteen blocks, clinics, or accommodation complexes. Fully insulated, weather-sealed, and pre-engineered for rapid block assembly.",
@@ -636,7 +652,7 @@ export const products: Product[] = [
     id: 15,
     title: "Custom Modular Villa",
     slug: "custom-modular-villa",
-    category: "Custom Buildings",
+    category: "Custom Buildings" as Category,
     description: "Architect-designed two-storey modular home with full glazing.",
     shortDescription: "An architectural marvel, combining the speeds of modular construction with high-end luxury villa finishes, floor-to-ceiling windows, and structural design.",
     fullDescription: "Why wait months for conventional concrete construction? Our Custom Modular Villa is designed by premium architects and built in our advanced factory. It features a modern architectural steel skeleton, full floor-to-ceiling double-glazed glass walls, custom wood cladding, luxury kitchen fittings, and premium designer restrooms. Fully customizable to meet your lifestyle and design preferences.",
@@ -674,7 +690,7 @@ export const products: Product[] = [
     id: 16,
     title: "Custom Showroom",
     slug: "custom-showroom",
-    category: "Custom Buildings",
+    category: "Custom Buildings" as Category,
     description: "Premium retail or showroom space engineered to your brand spec.",
     shortDescription: "A striking modular commercial showroom designed with high architectural glass, open spans, and professional branding elements.",
     fullDescription: "Launch your retail brand, car showroom, or property marketing suite in record time. The Custom Showroom is engineered with wide column-free spans, allowing maximum display layouts. Features include high-end facades, premium interior lighting, integrated HVAC, and full compliance with UAE commercial building codes.",
@@ -707,3 +723,136 @@ export const products: Product[] = [
     faq: getDefaultFAQs(),
   },
 ];
+
+// Configure variant overrides for all product families
+const variantOverridesMap: Record<string, Partial<Product>[]> = {
+  "security-guard-cabin": [
+    { slug: "small", title: "Small Security Guard Cabin", price: "AED 8,000", size: "1.2×1.2 m", capacity: "1 person", badge: "Compact" },
+    { slug: "medium", title: "Medium Security Guard Cabin", price: "AED 9,500", size: "1.5×1.5 m", capacity: "1 person", badge: "Popular" },
+    { slug: "large", title: "Large Security Guard Cabin", price: "AED 12,500", size: "2.0×2.0 m", capacity: "2 persons" },
+    { slug: "luxury", title: "Luxury Security Guard Cabin", price: "AED 15,500", size: "2.4×2.4 m", capacity: "2 persons", badge: "Premium" },
+  ],
+  "watchman-booth": [
+    { slug: "standard", title: "Standard Watchman Booth", price: "AED 12,000", size: "2×2 m", capacity: "1–2 person" },
+    { slug: "premium", title: "Premium Watchman Booth", price: "AED 14,500", size: "2.4×2.4 m", capacity: "2 persons", badge: "Premium" },
+  ],
+  "standard-portable-cabin": [
+    { slug: "small", title: "Small Portable Cabin", price: "AED 13,500", size: "3×4.5 m", capacity: "2–4 person" },
+    { slug: "standard", title: "Standard Portable Cabin", price: "AED 16,000", size: "3×6 m", capacity: "4–6 person", badge: "Best Seller" },
+    { slug: "large", title: "Large Portable Cabin", price: "AED 22,000", size: "3×9 m", capacity: "6–8 person" },
+  ],
+  "portable-site-office": [
+    { slug: "standard", title: "Standard Site Office", price: "AED 19,500", size: "3×7 m", capacity: "6 person" },
+    { slug: "executive", title: "Executive Site Office", price: "AED 25,500", size: "3×9 m", capacity: "8 person", badge: "Premium" },
+  ],
+  "executive-office-cabin": [
+    { slug: "standard", title: "Standard Executive Cabin", price: "AED 28,000", size: "4×8 m", capacity: "8 person", badge: "Premium" },
+    { slug: "large", title: "Large Executive Cabin", price: "AED 39,500", size: "4×12 m", capacity: "12 person" },
+  ],
+  "modular-office-suite": [
+    { slug: "standard", title: "Standard Office Suite", price: "AED 52,000", size: "6×12 m", capacity: "12+ person" },
+    { slug: "large", title: "Large Office Suite", price: "AED 78,000", size: "8×16 m", capacity: "20+ person", badge: "Corporate" },
+  ],
+  "labour-accommodation": [
+    { slug: "standard", title: "Standard Labour Bunkhouse", price: "AED 34,000", size: "6×14 m", capacity: "8-12 beds" },
+    { slug: "large", title: "Extended Labour Bunkhouse", price: "AED 45,000", size: "6×18 m", capacity: "12-16 beds" },
+  ],
+  "staff-accommodation": [
+    { slug: "standard", title: "Standard Staff Accommodation", price: "AED 46,000", size: "6×16 m", capacity: "6 rooms" },
+    { slug: "luxury", title: "Luxury Staff Accommodation", price: "AED 58,000", size: "6×18 m", capacity: "8 rooms", badge: "VIP" },
+  ],
+  "portable-toilet-block": [
+    { slug: "standard", title: "Standard Toilet Block", price: "AED 14,500", size: "3×6 m", capacity: "4 stalls" },
+    { slug: "large", title: "Large Toilet Block", price: "AED 19,500", size: "3×9 m", capacity: "6 stalls" },
+  ],
+  "ablution-shower-unit": [
+    { slug: "standard", title: "Standard Ablution Block", price: "AED 22,000", size: "4×8 m", capacity: "8 stalls" },
+    { slug: "large", title: "High-Capacity Ablution Block", price: "AED 32,000", size: "4×12 m", capacity: "12 stalls" },
+  ],
+  "20ft-container-office": [
+    { slug: "standard", title: "20ft Container Office (Standard)", price: "AED 21,000", size: "6x2.4 m", capacity: "3–4 person" },
+    { slug: "premium", title: "20ft Container Office (Premium)", price: "AED 26,000", size: "6x2.4 m", capacity: "3–4 person", badge: "Premium" },
+  ],
+  "40ft-container-office": [
+    { slug: "standard", title: "40ft Container Office (Standard)", price: "AED 38,000", size: "12x2.4 m", capacity: "5-8 person" },
+    { slug: "executive", title: "40ft Container Office (Executive)", price: "AED 46,000", size: "12x2.4 m", capacity: "5-8 person", badge: "Executive" },
+  ],
+  "double-stack-building": [
+    { slug: "standard", title: "Double-Stack Building (Standard)", price: "AED 96,000", size: "2 storey", capacity: "20+ person" },
+    { slug: "large", title: "Double-Stack Building (Large)", price: "AED 165,000", size: "2 storey (Large)", capacity: "40+ person", badge: "High Capacity" },
+  ],
+  "container-building-block": [
+    { slug: "standard", title: "Container Building Block (Standard)", price: "On request", size: "Multi-unit", capacity: "50+ person" },
+  ],
+  "custom-modular-villa": [
+    { slug: "standard", title: "Custom Modular Villa (Standard)", price: "On request", size: "Custom", capacity: "Bespoke", badge: "Bespoke" },
+  ],
+  "custom-showroom": [
+    { slug: "standard", title: "Custom Showroom (Standard)", price: "On request", size: "Custom", capacity: "Bespoke" },
+  ],
+};
+
+const buildProductFamilies = (): ProductFamily[] => {
+  return baseProducts.map((base) => {
+    const overrides = variantOverridesMap[base.slug] || [
+      { slug: "standard", title: base.title, price: base.price, size: base.size, capacity: base.capacity }
+    ];
+
+    const variants: Product[] = overrides.map((ov, vIndex) => {
+      let specs = [...base.specifications];
+      if (ov.size) {
+        specs = specs.map(s => {
+          if (s.label === "Overall Size" || s.label === "size") {
+            return { ...s, value: s.value.replace(base.size, ov.size!) };
+          }
+          return s;
+        });
+      }
+
+      return {
+        ...base,
+        id: (base.id * 100) + vIndex,
+        familySlug: base.slug,
+        slug: ov.slug || "standard",
+        title: ov.title || base.title,
+        price: ov.price || base.price,
+        size: ov.size || base.size,
+        capacity: ov.capacity || base.capacity,
+        badge: ov.badge || undefined,
+        specifications: specs,
+      };
+    });
+
+    const firstPrice = overrides[0].price || base.price;
+    const startingPrice = firstPrice.includes("request")
+      ? "On request"
+      : (firstPrice.startsWith("From") ? firstPrice : "From " + firstPrice);
+
+    const sizeRange = overrides.length > 1
+      ? `${overrides[0].size} – ${overrides[overrides.length - 1].size}`
+      : base.size;
+
+    const capacityRange = overrides.length > 1
+      ? `${overrides[0].capacity?.replace(" person", "").replace(" people", "").replace(" beds", "").replace(" stalls", "")} – ${overrides[overrides.length - 1].capacity}`
+      : base.capacity;
+
+    return {
+      id: base.id,
+      title: base.title,
+      slug: base.slug,
+      category: base.category,
+      description: base.description,
+      shortDescription: base.shortDescription,
+      startingPrice: startingPrice,
+      images: base.images,
+      sizeRange: sizeRange,
+      capacityRange: capacityRange,
+      badge: base.badge,
+      variants: variants
+    };
+  });
+};
+
+export const productFamilies: ProductFamily[] = buildProductFamilies();
+
+export const products: Product[] = productFamilies.flatMap((family) => family.variants);
