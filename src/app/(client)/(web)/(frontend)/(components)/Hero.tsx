@@ -12,7 +12,7 @@ import {
   FileText,
   ArrowRight,
   Star,
-} from "../../../../components/Icons";
+} from "@/src/components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);

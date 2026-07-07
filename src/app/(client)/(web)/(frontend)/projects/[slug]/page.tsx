@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { projects } from "../../../../../data/projects";
+import { projects } from "@/src/data/projects";
 import ProjectDetailsClient from "./ProjectDetailsClient";
 
 type ProjectPageProps = {
