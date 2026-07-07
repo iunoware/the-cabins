@@ -3,10 +3,12 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Product } from "@/src/data/products";
+import { Product, productFamilies } from "@/src/data/products";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
+import Breadcrumb from "../../(components)/Breadcrumb";
 import { gsap } from "gsap";
+
 import { useGSAP } from "@gsap/react";
 
 interface ProductHeaderShowcaseProps {
@@ -15,6 +17,7 @@ interface ProductHeaderShowcaseProps {
 
 export default function ProductHeaderShowcase({ product }: ProductHeaderShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const family = productFamilies.find((f) => f.slug === product.familySlug);
 
   useGSAP(
     () => {
@@ -58,23 +61,12 @@ export default function ProductHeaderShowcase({ product }: ProductHeaderShowcase
   return (
     <div ref={containerRef} className="w-full">
       {/* 1. Breadcrumb */}
-      <nav className="breadcrumb-anim mb-8 flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold text-gray-400">
-        <Link href="/" className="hover:text-[#E71F32] transition">
-          Home
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-        <Link href="/products" className="hover:text-[#E71F32] transition">
-          Products
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-        <span className="text-gray-400 font-bold uppercase text-[11px] tracking-wider">
-          {product.category}
-        </span>
-        <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-        <span className="text-[#111217] font-bold">
-          {product.title}
-        </span>
-      </nav>
+      <Breadcrumb
+        category={product.category}
+        family={family ? { title: family.title, slug: family.slug } : undefined}
+        variantName={product.title}
+      />
+
 
       {/* 2. Product Showcase Grid */}
       <div className="grid gap-8 lg:grid-cols-12 items-start">

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { products } from "@/src/data/products";
+import { products, productFamilies } from "@/src/data/products";
 import ProductHeaderShowcase from "./(components)/ProductHeaderShowcase";
 import FeatureGrid from "./(components)/FeatureGrid";
 import SpecificationTable from "./(components)/SpecificationTable";
@@ -10,22 +10,30 @@ import RelatedProducts from "./(components)/RelatedProducts";
 
 interface PageProps {
   params: Promise<{
-    slug: string;
+    familySlug: string;
+    variantSlug: string;
   }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // 1. Static route generation for performance and SEO
 export async function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
+  const paths: { familySlug: string; variantSlug: string }[] = [];
+  productFamilies.forEach((family) => {
+    family.variants.forEach((variant) => {
+      paths.push({
+        familySlug: family.slug,
+        variantSlug: variant.slug,
+      });
+    });
+  });
+  return paths;
 }
 
 // 2. SEO-friendly metadata generation
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const { familySlug, variantSlug } = await params;
+  const product = products.find((p) => p.familySlug === familySlug && p.slug === variantSlug);
 
   if (!product) {
     return {
@@ -53,12 +61,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
-  const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const { familySlug, variantSlug } = await params;
+  const product = products.find((p) => p.familySlug === familySlug && p.slug === variantSlug);
 
   if (!product) {
     notFound();
   }
+
 
   return (
     <div className="bg-white min-h-screen">
