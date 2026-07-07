@@ -1,22 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { products, categories, Category } from "@/src/data/products";
+import { productFamilies, categories, Category } from "@/src/data/products";
 import ProductCard from "./ProductCard";
 
 export default function Products() {
   const [activeCategory, setActiveCategory] = useState<Category | "All Products">("All Products");
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === "All Products") return products;
+    if (activeCategory === "All Products") return productFamilies;
 
-    return products.filter((product) => product.category === activeCategory);
+    return productFamilies.filter((product) => product.category === activeCategory);
   }, [activeCategory]);
 
   const getCategoryCount = (category: Category | "All Products") => {
-    if (category === "All Products") return products.length;
+    if (category === "All Products") return productFamilies.length;
 
-    return products.filter((product) => product.category === category).length;
+    return productFamilies.filter((product) => product.category === category).length;
   };
 
   return (
@@ -67,4 +67,5 @@ export default function Products() {
     </section>
   );
 }
+
 

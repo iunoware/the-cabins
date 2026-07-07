@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { Product, products } from "@/src/data/products";
-import ProductCard from "../../(components)/ProductCard";
+import { Product, productFamilies } from "@/src/data/products";
+import ProductCard from "../../../(components)/ProductCard";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -18,24 +18,25 @@ interface RelatedProductsProps {
 export default function RelatedProducts({ currentProduct }: RelatedProductsProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Filter same category products, exclude current product
+  // Filter same category families, exclude current product's family
   const related = (() => {
-    const sameCategory = products.filter(
-      (p) => p.category === currentProduct.category && p.id !== currentProduct.id
+    const sameCategory = productFamilies.filter(
+      (f) => f.category === currentProduct.category && f.slug !== currentProduct.familySlug
     );
     let list = [...sameCategory];
     
-    // Pad with other categories if we have fewer than 3 products in this category
+    // Pad with other categories if we have fewer than 3 families in this category
     if (list.length < 3) {
       const remaining = 3 - list.length;
-      const otherCats = products.filter(
-        (p) => p.category !== currentProduct.category && p.id !== currentProduct.id
+      const otherCats = productFamilies.filter(
+        (f) => f.category !== currentProduct.category && f.slug !== currentProduct.familySlug
       );
       list = [...list, ...otherCats.slice(0, remaining)];
     }
     
     return list.slice(0, 3);
   })();
+
 
   useGSAP(
     () => {
