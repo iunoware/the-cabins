@@ -5,7 +5,8 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import { ArrowRight } from "../../../../components/Icons";
+// import { ArrowRight } from "../../../../components/Icons";
+import { ArrowRight } from "@/src/components/Icons";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -495,16 +496,14 @@ export default function Solutions() {
     },
     {
       title: "Container Offices",
-      description:
-        "Heavy-duty shipping containers repurposed into premium workspaces.",
+      description: "Heavy-duty shipping containers repurposed into premium workspaces.",
       href: "/products",
       badge: "NEW",
       illustration: ContainerOfficeSVG,
     },
     {
       title: "Container Buildings",
-      description:
-        "Scalable, modular multi-level structures for fast deployment.",
+      description: "Scalable, modular multi-level structures for fast deployment.",
       href: "/products",
       illustration: ContainerBuildingSVG,
     },

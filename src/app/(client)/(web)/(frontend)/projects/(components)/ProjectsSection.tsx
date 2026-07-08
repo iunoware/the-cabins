@@ -254,7 +254,7 @@ import {
   projects,
   type Category,
   type Project,
-} from "../../../../../data/projects";
+} from "@/src/data/projects";
 
 export default function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState<Category>("All Projects");
