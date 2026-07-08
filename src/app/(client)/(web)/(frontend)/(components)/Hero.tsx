@@ -6,13 +6,9 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
-import {
-  Phone,
-  WhatsApp,
-  FileText,
-  ArrowRight,
-  Star,
-} from "@/src/components/Icons";
+// import { Phone, WhatsApp, FileText, ArrowRight, Star } from "@/src/components/Icons";
+import { ArrowRight, Star } from "@/src/components/Icons";
+import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -247,13 +243,13 @@ export default function Hero() {
             ref={buttonsRef}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-14 w-full sm:w-auto"
           >
-            <a
+            <Link
               href="/products"
               className="px-8 py-3.5 rounded-full bg-[#D81E2C] text-white font-semibold text-[15px] flex items-center justify-center gap-2 group transition-all duration-300 hover:bg-[#B81924] hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D81E2C] cursor-pointer"
             >
               <span>Explore Products</span>
               <ArrowRight className="w-4.5 h-4.5 text-white transition-transform duration-300 group-hover:translate-x-1.5" />
-            </a>
+            </Link>
             <a
               href="/contact"
               className="px-8 py-3.5 rounded-full border border-white bg-transparent text-white font-semibold text-[15px] flex items-center justify-center transition-all duration-300 hover:bg-white hover:text-black hover:border-transparent hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white cursor-pointer"
