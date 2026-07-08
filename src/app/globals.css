@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
+@custom-variant dark (.never-match-dark);
+
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #111111;
   --brand-red: #e31b23;

@@ -1,19 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ReactNode } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  Grid,
-  Boxes,
-  Building2,
-  Settings,
-  Menu,
-  X,
-} from "lucide-react";
+import { Grid, Boxes, Building2, Settings, Menu, X } from "lucide-react";
 
 type SubItem = {
   link: string;
@@ -31,7 +24,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
   const navItems: NavItem[] = [
     {
@@ -127,7 +120,7 @@ export default function Sidebar() {
             <div
               className={`logo-text ${isCollapsed ? "hidden max-[768px]:block" : "block"}`}
             >
-              <h2 className="text-[#111111] text-xl font-bold m-0 leading-tight">
+              <h2 className="text-brand-dark text-xl font-bold m-0 leading-tight">
                 The Cabins
               </h2>
               <span className="text-gray-500 text-[11px] tracking-wider uppercase font-semibold">
@@ -156,8 +149,7 @@ export default function Sidebar() {
                   ? pathname === "/admin"
                   : pathname.startsWith(item.link);
 
-              const hasSubItems =
-                item.subItems && item.subItems.length > 0;
+              const hasSubItems = item.subItems && item.subItems.length > 0;
 
               return (
                 <div key={itemIndex} className="flex flex-col gap-1">
@@ -238,9 +230,7 @@ export default function Sidebar() {
               </h4>
             </div>
           </Link>
-          <button
-            className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors"
-          >
+          <button className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors">
             Logout
           </button>
         </div>
