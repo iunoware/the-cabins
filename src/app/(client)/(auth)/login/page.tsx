@@ -67,7 +67,7 @@ export default function LoginPage() {
       }
 
       toast.success("Login successful");
-      router.replace("/");
+      router.replace("/admin");
       router.refresh();
     } catch {
       toast.error("Something went wrong");

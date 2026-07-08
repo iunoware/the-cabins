@@ -6,14 +6,8 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  Grid,
-  Boxes,
-  Building2,
-  Settings,
-  Menu,
-  X,
-} from "lucide-react";
+import { Grid, Boxes, Building2, Settings, Menu, X } from "lucide-react";
+import { toast } from "sonner";
 
 type SubItem = {
   link: string;
@@ -55,6 +49,25 @@ export default function Sidebar() {
       icon: <Settings size={18} className="shrink-0" />,
     },
   ];
+
+  async function handleLogout() {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        toast.error("Logout failed");
+        return;
+      }
+
+      toast.success("Logged out successfully");
+      router.replace("/");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    }
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -156,8 +169,7 @@ export default function Sidebar() {
                   ? pathname === "/admin"
                   : pathname.startsWith(item.link);
 
-              const hasSubItems =
-                item.subItems && item.subItems.length > 0;
+              const hasSubItems = item.subItems && item.subItems.length > 0;
 
               return (
                 <div key={itemIndex} className="flex flex-col gap-1">
@@ -200,9 +212,7 @@ export default function Sidebar() {
                                 : "text-gray-500 hover:text-[#e31b23] hover:bg-gray-50"
                             }`}
                           >
-                            <span className="text-[10px] text-gray-300">
-                              ├─
-                            </span>
+                            <span className="text-[10px] text-gray-300">├─</span>
                             <span>{subItem.title}</span>
                           </Link>
                         );
@@ -233,12 +243,11 @@ export default function Sidebar() {
             <div
               className={`profile-info ${isCollapsed ? "hidden max-[768px]:block" : "block"}`}
             >
-              <h4 className="text-xs font-semibold text-gray-800 m-0">
-                User Name
-              </h4>
+              <h4 className="text-xs font-semibold text-gray-800 m-0">User Name</h4>
             </div>
           </Link>
           <button
+            onClick={handleLogout}
             className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors"
           >
             Logout
