@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ReactNode } from "react";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   const navItems: NavItem[] = [
     {
@@ -113,7 +113,7 @@ export default function Sidebar() {
 
       {/* 3. THE SIDEBAR */}
       <aside
-        className={`overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden fixed top-0 bottom-0 left-0 bg-white border-r border-gray-100 p-4.5 flex flex-col shrink-0 transition-all duration-300 ease-in-out overflow-x-hidden whitespace-nowrap z-9998 md:sticky md:h-screen ${
+        className={`overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden fixed top-0 bottom-0 left-0 bg-[#040C17] border-r border-gray-100 p-4.5 flex flex-col shrink-0 transition-all duration-300 ease-in-out overflow-x-hidden whitespace-nowrap z-9998 md:sticky md:h-screen ${
           isCollapsed
             ? "w-20 px-3 max-[768px]:-translate-x-full max-[768px]:w-64"
             : "w-64"
@@ -140,10 +140,10 @@ export default function Sidebar() {
             <div
               className={`logo-text ${isCollapsed ? "hidden max-[768px]:block" : "block"}`}
             >
-              <h2 className="text-brand-dark text-xl font-bold m-0 leading-tight">
+              <h2 className="text-white text-xl font-bold m-0 leading-tight">
                 The Cabins
               </h2>
-              <span className="text-gray-500 text-[11px] tracking-wider uppercase font-semibold">
+              <span className="text-gray-300 text-[11px] tracking-wider uppercase font-semibold">
                 Admin Panel
               </span>
             </div>
@@ -178,8 +178,8 @@ export default function Sidebar() {
                     onClick={handleLinkClick}
                     className={`flex items-center gap-3 px-4 py-3.5 rounded-xl no-underline transition-all text-sm border-l-4 ${
                       isActive && !hasSubItems
-                        ? "bg-red-50 text-[#e31b23] border-[#e31b23] rounded-l-none rounded-r-xl font-semibold"
-                        : "text-gray-600 border-transparent hover:bg-gray-50 hover:text-[#e31b23]"
+                        ? "bg-[#e31b23] text-white border-white rounded-l-none rounded-r-xl font-semibold"
+                        : "text-gray-200 border-transparent  hover:text-[#e31b23]"
                     } ${isCollapsed ? "justify-center py-3.5 px-0" : ""}`}
                   >
                     <span>{item.icon}</span>
@@ -252,7 +252,7 @@ export default function Sidebar() {
           </Link>
           <button
             onClick={handleLogout}
-            className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors"
+            className="bg-white/60  text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors"
           >
             Logout
           </button>

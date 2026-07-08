@@ -4,8 +4,19 @@ import { useMemo, useState } from "react";
 import { productFamilies, categories, Category } from "@/src/data/products";
 import ProductCard from "./ProductCard";
 
-export default function Products() {
-  const [activeCategory, setActiveCategory] = useState<Category | "All Products">("All Products");
+interface ProductsProps {
+  dbCategories?: { id: string; name: string; slug: string }[];
+}
+
+export default function Products({ dbCategories = [] }: ProductsProps) {
+  const categoryNames = useMemo(() => {
+    if (dbCategories.length > 0) {
+      return ["All Products", ...dbCategories.map((c) => c.name)];
+    }
+    return categories;
+  }, [dbCategories]);
+
+  const [activeCategory, setActiveCategory] = useState<string>("All Products");
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === "All Products") return productFamilies;
@@ -13,7 +24,7 @@ export default function Products() {
     return productFamilies.filter((product) => product.category === activeCategory);
   }, [activeCategory]);
 
-  const getCategoryCount = (category: Category | "All Products") => {
+  const getCategoryCount = (category: string) => {
     if (category === "All Products") return productFamilies.length;
 
     return productFamilies.filter((product) => product.category === category).length;
@@ -29,7 +40,7 @@ export default function Products() {
           </h3>
 
           <div className="space-y-2">
-            {categories.map((category) => {
+            {categoryNames.map((category) => {
               const isActive = activeCategory === category;
 
               return (

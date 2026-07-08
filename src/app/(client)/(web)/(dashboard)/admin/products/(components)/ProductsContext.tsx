@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { productFamilies } from "@/src/data/products";
+import { toast } from "sonner";
 
 // Helper for slug generation
 export const slugify = (text: string) =>
@@ -20,6 +21,8 @@ export interface CategoryState {
   image: string;
   active: boolean; // true = Published, false = Draft
   updatedAt: string;
+  familiesCount: number;
+  productsCount: number;
 }
 
 export interface FamilyState {
@@ -70,6 +73,10 @@ export interface ProductState {
   metaDescription?: string;
   keywords?: string;
   ogImage?: string;
+  // Pricing
+  originalPrice?: number;
+  discountedPrice?: number;
+  currency?: string;
 }
 
 interface ProductsContextType {
@@ -77,10 +84,11 @@ interface ProductsContextType {
   families: FamilyState[];
   products: ProductState[];
   isLoading: boolean;
+  loadCategories: (search?: string, status?: string, sortBy?: string) => Promise<void>;
   // Category Actions
-  addCategory: (category: Omit<CategoryState, "id" | "updatedAt">) => CategoryState;
-  updateCategory: (id: string, category: Partial<CategoryState>) => void;
-  deleteCategory: (id: string) => void;
+  addCategory: (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => Promise<CategoryState>;
+  updateCategory: (id: string, category: Partial<CategoryState>) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
   // Family Actions
   addFamily: (family: Omit<FamilyState, "id" | "updatedAt">) => FamilyState;
   updateFamily: (id: string, family: Partial<FamilyState>) => void;
@@ -110,45 +118,49 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<ProductState[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize from products.ts mock data or localStorage
-  useEffect(() => {
+  // Fetch categories from live backend
+  const loadCategories = async (search = "", status = "all", sortBy = "newest") => {
+    setIsLoading(true);
     try {
-      const storedCategories = localStorage.getItem("admin_categories");
+      const query = new URLSearchParams({ search, status, sortBy }).toString();
+      const res = await fetch(`/api/admin/categories?${query}`);
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+
+      const data = await res.json();
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+      toast.error("Failed to load categories from the server.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initialize Category and local mock data on mount
+  useEffect(() => {
+    // Load Categories from Backend API
+    loadCategories();
+
+    // Load Families and Products from LocalStorage for UI drilldown fallbacks (Phase 1)
+    try {
       const storedFamilies = localStorage.getItem("admin_families");
       const storedProducts = localStorage.getItem("admin_products");
 
-      if (storedCategories && storedFamilies && storedProducts) {
-        setCategories(JSON.parse(storedCategories));
+      if (storedFamilies && storedProducts) {
         setFamilies(JSON.parse(storedFamilies));
         setProducts(JSON.parse(storedProducts));
       } else {
-        // Build initial structures from static export
-        const mappedCategories: CategoryState[] = [];
         const mappedFamilies: FamilyState[] = [];
         const mappedProducts: ProductState[] = [];
 
-        // Track distinct categories
-        const catMap = new Map<string, string>(); // name -> id
-
+        // Build initial structures from static export
         productFamilies.forEach((family) => {
-          // 1. Process Category
-          let catId = catMap.get(family.category);
-          if (!catId) {
-            catId = `cat-${slugify(family.category)}`;
-            catMap.set(family.category, catId);
-            mappedCategories.push({
-              id: catId,
-              name: family.category,
-              slug: slugify(family.category),
-              description: `Premium engineered ${family.category.toLowerCase()} modular solutions.`,
-              image: family.images[0] || "/images/security-cabin.png",
-              active: true,
-              updatedAt: new Date().toISOString(),
-            });
-          }
-
-          // 2. Process Family
+          const catId = `cat-${slugify(family.category)}`;
           const famId = `fam-${family.slug}`;
+
           mappedFamilies.push({
             id: famId,
             categoryId: catId,
@@ -162,7 +174,6 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
             updatedAt: new Date().toISOString(),
           });
 
-          // 3. Process Variants
           family.variants.forEach((variant) => {
             mappedProducts.push({
               id: `prod-${variant.id}`,
@@ -195,64 +206,91 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
           });
         });
 
-        // Save back to local storage
-        localStorage.setItem("admin_categories", JSON.stringify(mappedCategories));
         localStorage.setItem("admin_families", JSON.stringify(mappedFamilies));
         localStorage.setItem("admin_products", JSON.stringify(mappedProducts));
 
-        setCategories(mappedCategories);
         setFamilies(mappedFamilies);
         setProducts(mappedProducts);
       }
     } catch (e) {
-      console.error("Failed to load products context:", e);
-    } finally {
-      // Small simulated delay for dashboard skeletons
-      setTimeout(() => setIsLoading(false), 800);
+      console.error("Failed to load local families/products mock data:", e);
     }
   }, []);
 
-  // Synchronize state changes to localStorage
-  const syncToStorage = (cats: CategoryState[], fams: FamilyState[], prods: ProductState[]) => {
-    localStorage.setItem("admin_categories", JSON.stringify(cats));
+  // Sync family & products data changes to localStorage
+  const syncToStorage = (fams: FamilyState[], prods: ProductState[]) => {
     localStorage.setItem("admin_families", JSON.stringify(fams));
     localStorage.setItem("admin_products", JSON.stringify(prods));
   };
 
   // CATEGORY ACTIONS
-  const addCategory = (category: Omit<CategoryState, "id" | "updatedAt">) => {
-    const newCat: CategoryState = {
-      ...category,
-      id: `cat-${slugify(category.name)}-${Date.now().toString().slice(-4)}`,
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [...categories, newCat];
-    setCategories(updated);
-    syncToStorage(updated, families, products);
-    return newCat;
+  const addCategory = async (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => {
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(category),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const newCat = await res.json();
+      setCategories((prev) => [newCat, ...prev]);
+      toast.success("Category created successfully.");
+      return newCat;
+    } catch (err: any) {
+      console.error("Failed to create category:", err);
+      toast.error(err.message || "Failed to create category.");
+      throw err;
+    }
   };
 
-  const updateCategory = (id: string, category: Partial<CategoryState>) => {
-    const updated = categories.map((cat) =>
-      cat.id === id
-        ? { ...cat, ...category, updatedAt: new Date().toISOString() }
-        : cat
-    );
-    setCategories(updated);
-    syncToStorage(updated, families, products);
+  const updateCategory = async (id: string, category: Partial<CategoryState>) => {
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(category),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const updatedCat = await res.json();
+      setCategories((prev) =>
+        prev.map((cat) => (cat.id === id ? updatedCat : cat))
+      );
+      toast.success("Category updated successfully.");
+    } catch (err: any) {
+      console.error("Failed to update category:", err);
+      toast.error(err.message || "Failed to update category.");
+      throw err;
+    }
   };
 
-  const deleteCategory = (id: string) => {
-    const updatedCats = categories.filter((cat) => cat.id !== id);
-    // Cascade delete or detach families and products belonging to this category
-    const updatedFams = families.filter((fam) => fam.categoryId !== id);
-    const deletedFamIds = families.filter((fam) => fam.categoryId === id).map((f) => f.id);
-    const updatedProds = products.filter((prod) => !deletedFamIds.includes(prod.familyId));
+  const deleteCategory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/categories/${id}`, {
+        method: "DELETE",
+      });
 
-    setCategories(updatedCats);
-    setFamilies(updatedFams);
-    setProducts(updatedProds);
-    syncToStorage(updatedCats, updatedFams, updatedProds);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+      toast.success("Category deleted successfully.");
+    } catch (err: any) {
+      console.error("Failed to delete category:", err);
+      toast.error(err.message || "Failed to delete category.");
+      throw err;
+    }
   };
 
   // FAMILY ACTIONS
@@ -264,7 +302,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [...families, newFam];
     setFamilies(updated);
-    syncToStorage(categories, updated, products);
+    syncToStorage(updated, products);
     return newFam;
   };
 
@@ -275,7 +313,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         : fam
     );
     setFamilies(updated);
-    syncToStorage(categories, updated, products);
+    syncToStorage(updated, products);
   };
 
   const deleteFamily = (id: string) => {
@@ -284,7 +322,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
     setFamilies(updatedFams);
     setProducts(updatedProds);
-    syncToStorage(categories, updatedFams, updatedProds);
+    syncToStorage(updatedFams, updatedProds);
   };
 
   // PRODUCT ACTIONS
@@ -296,7 +334,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [...products, newProd];
     setProducts(updated);
-    syncToStorage(categories, families, updated);
+    syncToStorage(families, updated);
     return newProd;
   };
 
@@ -307,13 +345,13 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         : prod
     );
     setProducts(updated);
-    syncToStorage(categories, families, updated);
+    syncToStorage(families, updated);
   };
 
   const deleteProduct = (id: string) => {
     const updated = products.filter((prod) => prod.id !== id);
     setProducts(updated);
-    syncToStorage(categories, families, updated);
+    syncToStorage(families, updated);
   };
 
   const duplicateProduct = (id: string) => {
@@ -331,12 +369,11 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     };
     const updated = [...products, duplicated];
     setProducts(updated);
-    syncToStorage(categories, families, updated);
+    syncToStorage(families, updated);
   };
 
   // Reset to default
   const resetData = () => {
-    localStorage.removeItem("admin_categories");
     localStorage.removeItem("admin_families");
     localStorage.removeItem("admin_products");
     window.location.reload();
@@ -349,6 +386,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         families,
         products,
         isLoading,
+        loadCategories,
         addCategory,
         updateCategory,
         deleteCategory,
