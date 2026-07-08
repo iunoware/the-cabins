@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { ChevronDown, Plus, Trash2, Upload, FileText, Smartphone, Compass, Globe, Check, Eye, Trash, Edit3, ArrowLeft, ArrowRight, Star, HelpCircle, Save, X, Layers, LayoutDashboard, Sparkles, Boxes, Image as ImageIcon } from "lucide-react";
+import { ChevronDown, Plus, Trash2, Upload, FileText, Smartphone, Compass, Globe, Check, Eye, Trash, Edit3, ArrowLeft, ArrowRight, Star, HelpCircle, Save, X, Layers, LayoutDashboard, Sparkles, Boxes, DollarSign, Image as ImageIcon } from "lucide-react";
 import { useProducts, ProductState, slugify } from "./ProductsContext";
 
 interface ProductFormProps {
@@ -66,6 +66,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
   const [active, setActive] = useState(true);
   const [featured, setFeatured] = useState(false);
 
+  // Pricing State
+  const [originalPrice, setOriginalPrice] = useState("");
+  const [discountedPrice, setDiscountedPrice] = useState("");
+  const [currency, setCurrency] = useState("AED");
+  const [priceError, setPriceError] = useState("");
+
   // File Inputs Refs
   const coverInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -96,6 +102,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         setOgImage(prod.ogImage || "");
         setActive(prod.active);
         setFeatured(prod.featured);
+        setOriginalPrice(prod.originalPrice ? prod.originalPrice.toString() : "");
+        setDiscountedPrice(prod.discountedPrice ? prod.discountedPrice.toString() : "");
+        setCurrency(prod.currency || "AED");
       }
     } else {
       // Set default values for New Product
@@ -123,6 +132,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       setOgImage("");
       setActive(true);
       setFeatured(false);
+      setOriginalPrice("");
+      setDiscountedPrice("");
+      setCurrency("AED");
     }
   }, [editId, products]);
 
@@ -132,6 +144,17 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       setSlug(slugify(name));
     }
   }, [name, isSlugManuallyEdited]);
+
+  // Pricing validation
+  useEffect(() => {
+    const orig = originalPrice ? parseFloat(originalPrice) : NaN;
+    const disc = discountedPrice ? parseFloat(discountedPrice) : NaN;
+    if (!isNaN(orig) && !isNaN(disc) && disc > orig) {
+      setPriceError("Discounted price cannot be greater than original price.");
+    } else {
+      setPriceError("");
+    }
+  }, [originalPrice, discountedPrice]);
 
   // 3. File uploads simulation
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,10 +254,25 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
   };
 
   // 6. Form Submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const [isSaving, setIsSaving] = useState(false);
 
-    if (!name.trim()) return alert("Product Name is required.");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSaving) return;
+
+    const orig = originalPrice ? parseFloat(originalPrice) : undefined;
+    const disc = discountedPrice ? parseFloat(discountedPrice) : undefined;
+    if (orig !== undefined && disc !== undefined && disc > orig) {
+      alert("Discounted price cannot be greater than original price.");
+      return;
+    }
+
+    let formattedPrice = "Price on Enquiry";
+    if (disc !== undefined) {
+      formattedPrice = `${currency} ${disc.toLocaleString()}`;
+    } else if (orig !== undefined) {
+      formattedPrice = `${currency} ${orig.toLocaleString()}`;
+    }
 
     const payload = {
       familyId,
@@ -242,13 +280,13 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       slug,
       shortDescription,
       description,
-      price: "From AED 9,500", // Fallback pricing
+      price: formattedPrice,
       brochure: brochureName ? `/brochures/${brochureName}` : "",
       model3d: model3dName ? `/models/${model3dName}` : "",
       thumbnail: coverImage,
       images: galleryImages.length > 0 ? galleryImages : [coverImage],
-      specifications,
-      features,
+      specifications: specifications.map((s: any) => ({ parameter: s.parameter || s.label, value: s.value })),
+      features: features.map((f: any) => ({ title: f.title, description: f.description, icon: f.icon })),
       active,
       featured,
       ctaText,
@@ -257,14 +295,24 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       metaDescription: metaDescription || shortDescription,
       keywords,
       ogImage: ogImage || coverImage,
+      originalPrice: orig,
+      discountedPrice: disc,
+      currency: currency || "AED",
     };
 
-    if (editId) {
-      updateProduct(editId, payload);
-    } else {
-      addProduct(payload);
+    setIsSaving(true);
+    try {
+      if (editId) {
+        await updateProduct(editId, payload);
+      } else {
+        await addProduct(payload);
+      }
+      onSave();
+    } catch (err) {
+      console.error("Failed to save product variant:", err);
+    } finally {
+      setIsSaving(false);
     }
-    onSave();
   };
 
   // Image reorder helpers
@@ -402,11 +450,86 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           </div>
         </section>
 
-        {/* SECTION 2: Gallery */}
+        {/* SECTION: Pricing Details */}
+        <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
+          <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
+            <DollarSign size={16} className="text-amber-500" />
+            2. Pricing Details
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4.5">
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                Currency
+              </label>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-850 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold cursor-pointer"
+              >
+                <option value="AED">AED (United Arab Emirates Dirham)</option>
+                <option value="USD">USD (United States Dollar)</option>
+                <option value="SAR">SAR (Saudi Riyal)</option>
+                <option value="QAR">QAR (Qatari Riyal)</option>
+                <option value="OMR">OMR (Omani Rial)</option>
+                <option value="BHD">BHD (Bahraini Dinar)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                Original Price (Optional)
+              </label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 select-none">
+                  {currency}
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={originalPrice}
+                  onChange={(e) => setOriginalPrice(e.target.value)}
+                  placeholder="e.g. 12500"
+                  className="w-full text-sm pl-12 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-850 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                Discounted / Selling Price (Optional)
+              </label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 select-none">
+                  {currency}
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={discountedPrice}
+                  onChange={(e) => setDiscountedPrice(e.target.value)}
+                  placeholder="e.g. 9500"
+                  className={`w-full text-sm pl-12 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold ${
+                    priceError ? "border-red-500 focus:ring-red-200" : "border-gray-100 dark:border-zinc-855"
+                  }`}
+                />
+              </div>
+              {priceError && (
+                <span className="text-[10px] text-red-500 font-bold mt-1 block">
+                  {priceError}
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: Gallery */}
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
             <ImageIcon size={16} className="text-emerald-500" />
-            2. Gallery Showcase
+            3. Gallery Showcase
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -516,12 +639,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           </div>
         </section>
 
-        {/* SECTION 3: Specifications */}
+        {/* SECTION 4: Specifications */}
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <div className="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-zinc-855/50">
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <Compass size={16} className="text-[#e31b23]" />
-              3. Specifications
+              4. Specifications
             </h3>
             <button
               type="button"
@@ -593,7 +716,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
             <Sparkles size={16} className="text-purple-500" />
-            4. Features & Selling Chips
+            5. Features & Selling Chips
           </h3>
 
           <div className="flex gap-2">
@@ -707,11 +830,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
 
         {/* SECTION 5 & 6: 3D Model & Brochure PDF */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* SECTION 5: 3D Model */}
+          {/* SECTION 6: 3D Model */}
           <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-4.5">
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-55 dark:border-zinc-850/50 flex items-center gap-2">
               <Smartphone size={16} className="text-blue-500" />
-              5. Interactive 3D Model
+              6. Interactive 3D Model
             </h3>
             
             <div className="flex flex-col gap-3">
@@ -763,11 +886,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             </div>
           </section>
 
-          {/* SECTION 6: Brochure */}
+          {/* SECTION 7: Brochure */}
           <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-4.5">
-            <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
+            <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-855/50 flex items-center gap-2">
               <FileText size={16} className="text-amber-500" />
-              6. Brochure PDF
+              7. Brochure PDF
             </h3>
             
             <div className="flex flex-col gap-3">
@@ -820,11 +943,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           </section>
         </div>
 
-        {/* SECTION 7: CTA */}
+        {/* SECTION 8: CTA */}
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
             <Smartphone size={16} className="text-emerald-500" />
-            7. WhatsApp Action CTA Overrides
+            8. WhatsApp Action CTA Overrides
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5">
@@ -857,7 +980,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           </div>
         </section>
 
-        {/* SECTION 8: SEO (accordion) */}
+        {/* SECTION 9: SEO (accordion) */}
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl overflow-hidden shadow-xs flex flex-col">
           {/* Accordion Header */}
           <button
@@ -867,7 +990,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           >
             <span className="text-sm font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <Globe size={16} className="text-indigo-500" />
-              8. Search Engine Optimization (SEO)
+              9. Search Engine Optimization (SEO)
             </span>
             <ChevronDown
               size={18}
@@ -942,11 +1065,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           </div>
         </section>
 
-        {/* SECTION 9: Publish & Feature */}
+        {/* SECTION 10: Publish & Feature */}
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
-          <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-855/50 flex items-center gap-2">
+          <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-55 dark:border-zinc-855/50 flex items-center gap-2">
             <Compass size={16} className="text-amber-500" />
-            9. Publish Status
+            10. Publish Status
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4.5">
@@ -1004,16 +1127,18 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 border border-gray-250 dark:border-zinc-800 rounded-xl transition-all cursor-pointer select-none"
+            disabled={isSaving}
+            className="px-6 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 border border-gray-250 dark:border-zinc-800 rounded-xl transition-all cursor-pointer select-none disabled:opacity-40"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex items-center gap-1.5 px-7 py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs cursor-pointer select-none"
+            disabled={isSaving}
+            className="flex items-center gap-1.5 px-7 py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs cursor-pointer select-none disabled:opacity-75"
           >
             <Save size={14} />
-            <span>{editId ? "Update Product" : "Save Product Variant"}</span>
+            <span>{isSaving ? "Saving..." : editId ? "Update Product" : "Save Product Variant"}</span>
           </button>
         </div>
       </form>

@@ -1,7 +1,17 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Search, Eye, Edit2, Trash2, ArrowUpDown, HelpCircle, Save, X, ImageIcon } from "lucide-react";
+import {
+  Search,
+  Eye,
+  Edit2,
+  Trash2,
+  ArrowUpDown,
+  HelpCircle,
+  Save,
+  X,
+  ImageIcon,
+} from "lucide-react";
 import { useProducts, FamilyState } from "./ProductsContext";
 import ConfirmDialog from "./ConfirmDialog";
 import FamilyModal from "./FamilyModal";
@@ -11,7 +21,10 @@ interface FamilyTableProps {
   onSelectFamily: (id: string) => void;
 }
 
-export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableProps) {
+export default function FamilyTable({
+  categoryId,
+  onSelectFamily,
+}: FamilyTableProps) {
   const { categories, families, products, deleteFamily } = useProducts();
 
   // Search & Filter state
@@ -50,9 +63,14 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
       .sort((a, b) => {
         if (sortBy === "name-asc") return a.name.localeCompare(b.name);
         if (sortBy === "name-desc") return b.name.localeCompare(a.name);
-        if (sortBy === "oldest") return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+        if (sortBy === "oldest")
+          return (
+            new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+          );
         // default newest
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        return (
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
       });
   }, [families, products, categoryId, search, statusFilter, sortBy]);
 
@@ -69,7 +87,10 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 p-4.5 rounded-2xl shadow-xs">
         {/* Search */}
         <div className="relative w-full md:max-w-xs">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            size={16}
+          />
           <input
             type="text"
             value={search}
@@ -83,7 +104,9 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Status Filter */}
           <div className="flex items-center gap-2 bg-gray-50 dark:bg-zinc-850 px-3.5 py-1.5 rounded-xl border border-gray-100 dark:border-zinc-800">
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">Status:</span>
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+              Status:
+            </span>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -98,7 +121,9 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
           {/* Sort */}
           <div className="flex items-center gap-2 bg-gray-50 dark:bg-zinc-850 px-3.5 py-1.5 rounded-xl border border-gray-100 dark:border-zinc-800">
             <ArrowUpDown size={12} className="text-gray-400" />
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">Sort:</span>
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+              Sort:
+            </span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -116,8 +141,13 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
       {/* Table / Card Container */}
       {processedFamilies.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[300px] shadow-xs">
-          <HelpCircle className="text-gray-300 dark:text-zinc-700 mb-3" size={36} />
-          <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">No Families Created</h4>
+          <HelpCircle
+            className="text-gray-300 dark:text-zinc-700 mb-3"
+            size={36}
+          />
+          <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+            No Families Created
+          </h4>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 max-w-sm">
             {search || statusFilter !== "all"
               ? "Try adjusting your filters or search query to find product families."
@@ -132,12 +162,24 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
               <table className="w-full text-left border-collapse min-w-[700px]">
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/40">
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20">Thumbnail</th>
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Family Name</th>
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center w-28">Products Count</th>
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-24">Status</th>
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-32">Updated</th>
-                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right w-32">Actions</th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-20">
+                      Thumbnail
+                    </th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                      Family Name
+                    </th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center w-28">
+                      Products Count
+                    </th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-24">
+                      Status
+                    </th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider w-32">
+                      Updated
+                    </th>
+                    <th className="p-4.5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right w-32">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 dark:divide-zinc-800/60">
@@ -150,7 +192,11 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
                       <td className="p-4.5">
                         <div className="relative w-12 h-12 rounded-xl border border-gray-100 dark:border-zinc-800 overflow-hidden bg-gray-50 dark:bg-zinc-800/60 flex items-center justify-center shrink-0">
                           {fam.thumbnail ? (
-                            <img src={fam.thumbnail} alt={fam.name} className="w-full h-full object-cover" />
+                            <img
+                              src={fam.thumbnail}
+                              alt={fam.name}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <ImageIcon size={20} className="text-gray-300" />
                           )}
@@ -181,7 +227,9 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
                               : "bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-200/50 dark:border-zinc-700/50"
                           }`}
                         >
-                          <span className={`w-1.5 h-1.5 rounded-full ${fam.active ? "bg-emerald-500" : "bg-gray-400"}`} />
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${fam.active ? "bg-emerald-500" : "bg-gray-400"}`}
+                          />
                           {fam.active ? "Published" : "Draft"}
                         </span>
                       </td>
@@ -246,7 +294,11 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
                 <div className="flex gap-3.5 items-center">
                   <div className="relative w-12 h-12 rounded-xl border border-gray-100 dark:border-zinc-800 overflow-hidden bg-gray-50 dark:bg-zinc-800/60 flex items-center justify-center shrink-0">
                     {fam.thumbnail ? (
-                      <img src={fam.thumbnail} alt={fam.name} className="w-full h-full object-cover" />
+                      <img
+                        src={fam.thumbnail}
+                        alt={fam.name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <ImageIcon size={20} className="text-gray-300" />
                     )}
@@ -256,7 +308,11 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
                       {fam.name}
                     </h4>
                     <span className="text-[9px] text-gray-400 font-semibold block mt-0.5">
-                      Updated {new Date(fam.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      Updated{" "}
+                      {new Date(fam.updatedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -269,7 +325,7 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
                   <span className="text-[9px] font-extrabold bg-gray-50 dark:bg-zinc-800 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-zinc-800 px-2.5 py-0.5 rounded-md">
                     {fam.productsCount} Products
                   </span>
-                  
+
                   <span
                     className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold ${
                       fam.active
@@ -343,24 +399,40 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
       {viewingFamily && (
         <div className="fixed inset-0 z-9999 flex items-center justify-end">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setViewingFamily(null)} />
-          
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            onClick={() => setViewingFamily(null)}
+          />
+
           {/* Slide-over Content */}
           <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-gray-150 dark:border-zinc-800 shadow-2xl p-6.5 overflow-y-auto flex flex-col gap-6 animate-[slideInRight_0.25s_ease-out]">
             <div className="flex justify-between items-center border-b border-gray-100 dark:border-zinc-800 pb-4">
-              <h3 className="text-base font-extrabold text-gray-900 dark:text-gray-100">Family Details</h3>
-              <button onClick={() => setViewingFamily(null)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+              <h3 className="text-base font-extrabold text-gray-900 dark:text-gray-100">
+                Family Details
+              </h3>
+              <button
+                onClick={() => setViewingFamily(null)}
+                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              >
                 <X size={18} />
               </button>
             </div>
 
             <div className="flex flex-col items-center gap-4 text-center mt-2">
               <div className="w-28 h-28 border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-850 rounded-2xl overflow-hidden shadow-xs">
-                <img src={viewingFamily.thumbnail} alt={viewingFamily.name} className="w-full h-full object-cover" />
+                <img
+                  src={viewingFamily.thumbnail}
+                  alt={viewingFamily.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
-                <h4 className="text-lg font-extrabold text-gray-900 dark:text-gray-100">{viewingFamily.name}</h4>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">Slug: {viewingFamily.slug}</p>
+                <h4 className="text-lg font-extrabold text-gray-900 dark:text-gray-100">
+                  {viewingFamily.name}
+                </h4>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">
+                  Slug: {viewingFamily.slug}
+                </p>
               </div>
             </div>
 
@@ -368,25 +440,42 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
               <div className="flex justify-between text-xs font-semibold">
                 <span className="text-gray-500">Parent Category:</span>
                 <span className="text-gray-900 dark:text-gray-100 font-bold">
-                  {categories.find((c) => c.id === viewingFamily.categoryId)?.name || "Unknown"}
+                  {categories.find((c) => c.id === viewingFamily.categoryId)
+                    ?.name || "Unknown"}
                 </span>
               </div>
               <div className="flex justify-between text-xs font-semibold">
                 <span className="text-gray-500">Publish Status:</span>
-                <span className={viewingFamily.active ? "text-emerald-600 font-bold" : "text-gray-500 font-bold"}>
+                <span
+                  className={
+                    viewingFamily.active
+                      ? "text-emerald-600 font-bold"
+                      : "text-gray-500 font-bold"
+                  }
+                >
                   {viewingFamily.active ? "Published" : "Draft"}
                 </span>
               </div>
               <div className="flex justify-between text-xs font-semibold">
                 <span className="text-gray-500">Homepage Promo:</span>
-                <span className={viewingFamily.featured ? "text-amber-600 font-bold" : "text-gray-500 font-bold"}>
+                <span
+                  className={
+                    viewingFamily.featured
+                      ? "text-amber-600 font-bold"
+                      : "text-gray-500 font-bold"
+                  }
+                >
                   {viewingFamily.featured ? "Featured" : "Standard"}
                 </span>
               </div>
               <div className="flex justify-between text-xs font-semibold">
                 <span className="text-gray-500">Products (Variants):</span>
                 <span className="text-gray-900 dark:text-gray-100 font-bold">
-                  {products.filter((p) => p.familyId === viewingFamily.id).length} variants
+                  {
+                    products.filter((p) => p.familyId === viewingFamily.id)
+                      .length
+                  }{" "}
+                  variants
                 </span>
               </div>
               <div className="flex justify-between text-xs font-semibold">
@@ -401,12 +490,14 @@ export default function FamilyTable({ categoryId, onSelectFamily }: FamilyTableP
             </div>
 
             <div className="flex flex-col gap-3">
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">Description / Specifications</span>
+              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                Description / Specifications
+              </span>
               <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-zinc-850/40 p-3 rounded-xl border border-gray-100 dark:border-zinc-800/30 font-medium">
                 {viewingFamily.shortDescription || "No description provided."}
               </p>
             </div>
-            
+
             <button
               onClick={() => {
                 setEditingFamId(viewingFamily.id);
