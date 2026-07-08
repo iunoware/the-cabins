@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { unlink } from "fs/promises";
 
 export async function saveProjectImages(files: File[]) {
   const uploadDir = path.join(process.cwd(), "public", "uploads", "projects");
@@ -22,6 +23,21 @@ export async function saveProjectImages(files: File[]) {
       await writeFile(filePath, buffer);
 
       return `/uploads/projects/${fileName}`;
+    }),
+  );
+}
+
+export async function deleteProjectImageFiles(imageUrls: string[]) {
+  await Promise.all(
+    imageUrls.map(async (imageUrl) => {
+      try {
+        if (!imageUrl.startsWith("/uploads/projects/")) return;
+
+        const filePath = path.join(process.cwd(), "public", imageUrl);
+        await unlink(filePath);
+      } catch {
+        // Ignore missing files
+      }
     }),
   );
 }
