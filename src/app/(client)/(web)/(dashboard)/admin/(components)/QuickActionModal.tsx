@@ -62,7 +62,7 @@ export default function QuickActionModal({
     <div className="fixed inset-0 z-9999 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/45 backdrop-blur-[4px] transition-opacity duration-300 animate-[fadeIn_0.2s_ease-out]"
+        className="absolute inset-0 bg-black/45 backdrop-blur-xs transition-opacity duration-300 animate-[fadeIn_0.2s_ease-out]"
         onClick={onClose}
       />
 
@@ -153,7 +153,9 @@ export default function QuickActionModal({
                 </label>
                 <div className="border-2 border-dashed border-gray-100 dark:border-zinc-850 rounded-xl p-4.5 flex flex-col items-center justify-center hover:border-[#e31b23] transition-colors cursor-pointer bg-gray-50 dark:bg-zinc-800/20">
                   <Upload size={20} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-500">Drag files here, or browse</span>
+                  <span className="text-xs text-gray-500">
+                    Drag files here, or browse
+                  </span>
                 </div>
               </div>
             </>
@@ -233,7 +235,9 @@ export default function QuickActionModal({
                 </label>
                 <div className="border-2 border-dashed border-gray-100 dark:border-zinc-850 rounded-xl p-4.5 flex flex-col items-center justify-center hover:border-[#e31b23] transition-colors cursor-pointer bg-gray-50 dark:bg-zinc-800/20">
                   <Upload size={20} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-500">Upload multiple project photos</span>
+                  <span className="text-xs text-gray-500">
+                    Upload multiple project photos
+                  </span>
                 </div>
               </div>
             </>

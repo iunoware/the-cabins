@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ReactNode } from "react";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
   const navItems: NavItem[] = [
     {
@@ -140,7 +140,7 @@ export default function Sidebar() {
             <div
               className={`logo-text ${isCollapsed ? "hidden max-[768px]:block" : "block"}`}
             >
-              <h2 className="text-[#111111] text-xl font-bold m-0 leading-tight">
+              <h2 className="text-brand-dark text-xl font-bold m-0 leading-tight">
                 The Cabins
               </h2>
               <span className="text-gray-500 text-[11px] tracking-wider uppercase font-semibold">
@@ -212,7 +212,9 @@ export default function Sidebar() {
                                 : "text-gray-500 hover:text-[#e31b23] hover:bg-gray-50"
                             }`}
                           >
-                            <span className="text-[10px] text-gray-300">├─</span>
+                            <span className="text-[10px] text-gray-300">
+                              ├─
+                            </span>
                             <span>{subItem.title}</span>
                           </Link>
                         );
@@ -243,7 +245,9 @@ export default function Sidebar() {
             <div
               className={`profile-info ${isCollapsed ? "hidden max-[768px]:block" : "block"}`}
             >
-              <h4 className="text-xs font-semibold text-gray-800 m-0">User Name</h4>
+              <h4 className="text-xs font-semibold text-gray-800 m-0">
+                User Name
+              </h4>
             </div>
           </Link>
           <button
