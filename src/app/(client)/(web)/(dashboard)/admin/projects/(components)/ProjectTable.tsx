@@ -225,14 +225,14 @@ export default function ProjectTable({ categoryId, onEditProject }: ProjectTable
 
                         <td className="p-4.5">
                           <div className="flex items-center justify-end gap-1.5">
-                            <a
+                            {/* <a
                               href={`/projects/${project.slug}`}
                               target="_blank"
                               className="rounded-lg p-1.5 text-gray-400 transition hover:bg-blue-50 hover:text-blue-600"
                               title="Preview"
                             >
                               <Eye size={15} />
-                            </a>
+                            </a> */}
 
                             <button
                               onClick={() => onEditProject(project.id)}

@@ -83,19 +83,23 @@ import { saveProjectImages } from "./_utils";
 
 export async function GET() {
   try {
-    await getRequiredCurrentUser();
-
     const projects = await prisma.project.findMany({
       include: {
         category: true,
-        images: { orderBy: { sortOrder: "asc" } },
-        testimonials: { orderBy: { sortOrder: "asc" } },
+        images: {
+          orderBy: { sortOrder: "asc" },
+        },
+        testimonials: {
+          orderBy: { sortOrder: "asc" },
+        },
       },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     });
 
     return NextResponse.json({ projects });
-  } catch {
+  } catch (error) {
+    console.error("GET_ADMIN_PROJECTS_ERROR", error);
+
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
   }
 }

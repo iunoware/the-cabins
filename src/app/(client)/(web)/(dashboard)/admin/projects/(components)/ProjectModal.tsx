@@ -365,14 +365,14 @@ export default function ProjectModal({
                 placeholder="e.g. Completed"
               />
 
-              <Input
+              {/* <Input
                 label="Sort Order"
                 name="sortOrder"
                 type="number"
                 value={form.sortOrder}
                 onChange={handleChange}
                 placeholder="0"
-              />
+              /> */}
             </div>
 
             <Textarea

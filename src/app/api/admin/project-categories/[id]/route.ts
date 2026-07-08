@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/src/db/prisma";
 import { getRequiredCurrentUser } from "@/src/lib/auth/current-user";
+import { deleteProjectImageFiles } from "../../projects/_utils";
 
 type RouteProps = {
   params: Promise<{ id: string }>;
@@ -39,6 +40,27 @@ export async function DELETE(_: Request, { params }: RouteProps) {
     await getRequiredCurrentUser();
 
     const { id } = await params;
+
+    const category = await prisma.projectCategory.findUnique({
+      where: { id },
+      include: {
+        projects: {
+          include: {
+            images: true,
+          },
+        },
+      },
+    });
+
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    }
+
+    const imageUrls = category.projects.flatMap((project) =>
+      project.images.map((image) => image.imageUrl),
+    );
+
+    await deleteProjectImageFiles(imageUrls);
 
     await prisma.projectCategory.delete({
       where: { id },

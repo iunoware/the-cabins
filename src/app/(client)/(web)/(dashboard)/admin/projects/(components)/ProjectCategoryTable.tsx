@@ -75,7 +75,7 @@ export default function ProjectCategoryTable({
 
   return (
     <div className="flex w-full flex-col gap-5">
-      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-4.5 shadow-xs dark:border-zinc-800/40 dark:bg-zinc-900 md:flex-row">
+      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-gray-100 bg-white p-4.5 shadow-xs   md:flex-row">
         <div className="relative w-full md:max-w-xs">
           <Search
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
@@ -85,19 +85,19 @@ export default function ProjectCategoryTable({
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search categories..."
-            className="w-full rounded-xl border border-gray-100 bg-gray-50 py-2.5 pl-10 pr-4 text-xs font-semibold text-gray-900 outline-none transition focus:border-[#e31b23] focus:ring-2 focus:ring-[#e31b23]/25 dark:border-zinc-800 dark:bg-zinc-850 dark:text-gray-100"
+            className="w-full rounded-xl border border-gray-100 bg-gray-50 py-2.5 pl-10 pr-4 text-xs font-semibold text-gray-900 outline-none transition focus:border-[#e31b23] focus:ring-2 focus:ring-[#e31b23]/25   "
           />
         </div>
 
         <div className="flex w-full flex-wrap items-center gap-3 md:w-auto">
-          <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-3.5 py-1.5 dark:border-zinc-800 dark:bg-zinc-850">
+          <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-3.5 py-1.5  ">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
               Status:
             </span>
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
-              className="cursor-pointer border-0 bg-transparent p-0 text-xs font-bold text-gray-700 outline-none dark:text-gray-300"
+              className="cursor-pointer border-0 bg-transparent p-0 text-xs font-bold text-gray-700 outline-none "
             >
               <option value="all">All Status</option>
               <option value="active">Published</option>
@@ -105,7 +105,7 @@ export default function ProjectCategoryTable({
             </select>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-3.5 py-1.5 dark:border-zinc-800 dark:bg-zinc-850">
+          <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-gray-50 px-3.5 py-1.5  ">
             <ArrowUpDown size={12} className="text-gray-400" />
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
               Sort:
@@ -113,7 +113,7 @@ export default function ProjectCategoryTable({
             <select
               value={sortBy}
               onChange={(event) => setSortBy(event.target.value)}
-              className="cursor-pointer border-0 bg-transparent p-0 text-xs font-bold text-gray-700 outline-none dark:text-gray-300"
+              className="cursor-pointer border-0 bg-transparent p-0 text-xs font-bold text-gray-700 outline-none "
             >
               <option value="newest">Newest Updated</option>
               <option value="oldest">Oldest Updated</option>
@@ -125,22 +125,20 @@ export default function ProjectCategoryTable({
       </div>
 
       {processedCategories.length === 0 ? (
-        <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-gray-150 bg-white p-12 text-center shadow-xs dark:border-zinc-800/80 dark:bg-zinc-900">
-          <HelpCircle className="mb-3 text-gray-300 dark:text-zinc-700" size={36} />
-          <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
-            No Categories Found
-          </h4>
-          <p className="mt-1 max-w-sm text-xs font-medium text-gray-400 dark:text-gray-500">
+        <div className="flex min-h-75 flex-col items-center justify-center rounded-2xl border border-gray-150 bg-white p-12 text-center shadow-xs /80 ">
+          <HelpCircle className="mb-3 text-gray-300 " size={36} />
+          <h4 className="text-sm font-bold text-gray-800 ">No Categories Found</h4>
+          <p className="mt-1 max-w-sm text-xs font-medium text-gray-400 ">
             Create project categories first. Then add projects inside those categories.
           </p>
         </div>
       ) : (
         <>
-          <div className="hidden w-full overflow-hidden rounded-2xl border border-gray-100/60 bg-white shadow-xs dark:border-zinc-800/40 dark:bg-zinc-900 md:block">
+          <div className="hidden w-full overflow-hidden rounded-2xl border border-gray-100/60 bg-white shadow-xs   md:block">
             <div className="overflow-x-auto">
               <table className="w-full min-w-175 border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50/50 dark:border-zinc-800 dark:bg-zinc-900/40">
+                  <tr className="border-b border-gray-100 bg-gray-50/50  /40">
                     <th className="w-20 p-4.5 text-xs font-bold uppercase tracking-wider text-gray-400">
                       Icon
                     </th>
@@ -165,21 +163,21 @@ export default function ProjectCategoryTable({
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-gray-50 dark:divide-zinc-800/60">
+                <tbody className="divide-y divide-gray-50 ">
                   {processedCategories.map((category) => (
                     <tr
                       key={category.id}
                       onClick={() => onSelectCategory(category.id)}
-                      className="group/row cursor-pointer transition-colors hover:bg-gray-50/30 dark:hover:bg-zinc-800/10"
+                      className="group/row cursor-pointer transition-colors hover:bg-gray-50/30 "
                     >
                       <td className="p-4.5">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-gray-400 dark:border-zinc-800 dark:bg-zinc-800/60">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-gray-400  ">
                           <Folder size={20} />
                         </div>
                       </td>
 
                       <td className="p-4.5">
-                        <span className="text-xs font-bold text-gray-900 transition-colors group-hover/row:text-[#e31b23] dark:text-gray-100">
+                        <span className="text-xs font-bold text-gray-900 transition-colors group-hover/row:text-[#e31b23] ">
                           {category.name}
                         </span>
                         <span className="mt-0.5 block text-[10px] font-semibold text-gray-400">
@@ -188,13 +186,13 @@ export default function ProjectCategoryTable({
                       </td>
 
                       <td className="p-4.5">
-                        <p className="max-w-62 truncate text-xs font-medium text-gray-500 dark:text-gray-400">
+                        <p className="max-w-62 truncate text-xs font-medium text-gray-500 ">
                           {category.description || "No description"}
                         </p>
                       </td>
 
                       <td className="p-4.5 text-center">
-                        <span className="inline-flex items-center justify-center rounded-md border border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] font-extrabold text-gray-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-gray-400">
+                        <span className="inline-flex items-center justify-center rounded-md border border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] font-extrabold text-gray-600   ">
                           {category.projectsCount}
                         </span>
                       </td>
@@ -204,7 +202,7 @@ export default function ProjectCategoryTable({
                       </td>
 
                       <td className="p-4.5">
-                        <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                        <span className="text-[11px] font-semibold text-gray-500 ">
                           {new Date(category.updatedAt).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -261,15 +259,15 @@ export default function ProjectCategoryTable({
               <div
                 key={category.id}
                 onClick={() => onSelectCategory(category.id)}
-                className="cursor-pointer rounded-2xl border border-gray-100 bg-white p-4.5 shadow-xs transition hover:border-[#e31b23]/30 hover:shadow-md dark:border-zinc-800/60 dark:bg-zinc-900"
+                className="cursor-pointer rounded-2xl border border-gray-100 bg-white p-4.5 shadow-xs transition hover:border-[#e31b23]/30 hover:shadow-md /60 "
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-gray-400 dark:border-zinc-800 dark:bg-zinc-800/60">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 text-gray-400  ">
                     <Folder size={20} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <h4 className="truncate text-xs font-bold text-gray-900 dark:text-gray-100">
+                    <h4 className="truncate text-xs font-bold text-gray-900 ">
                       {category.name}
                     </h4>
                     <span className="mt-0.5 block text-[9px] font-semibold text-gray-400">
@@ -282,19 +280,19 @@ export default function ProjectCategoryTable({
                   </div>
                 </div>
 
-                <p className="mt-3 line-clamp-2 text-[11px] font-medium leading-relaxed text-gray-500 dark:text-gray-400">
+                <p className="mt-3 line-clamp-2 text-[11px] font-medium leading-relaxed text-gray-500 ">
                   {category.description || "No description provided."}
                 </p>
 
-                <div className="mt-3 flex items-center justify-between border-t border-gray-50 pt-3 dark:border-zinc-850/50">
-                  <span className="rounded-md border border-gray-100 bg-gray-50 px-2 py-0.5 text-[9px] font-extrabold text-gray-600 dark:border-zinc-800 dark:bg-zinc-800 dark:text-gray-400">
+                <div className="mt-3 flex items-center justify-between border-t border-gray-50 pt-3 ">
+                  <span className="rounded-md border border-gray-100 bg-gray-50 px-2 py-0.5 text-[9px] font-extrabold text-gray-600   ">
                     {category.projectsCount} Projects
                   </span>
 
                   <StatusBadge active={category.isActive} />
                 </div>
 
-                <div className="mt-2.5 flex justify-end gap-1.5 border-t border-gray-50 pt-2.5 dark:border-zinc-850/50">
+                <div className="mt-2.5 flex justify-end gap-1.5 border-t border-gray-50 pt-2.5 ">
                   <button
                     onClick={(event) => {
                       event.stopPropagation();
@@ -354,27 +352,27 @@ export default function ProjectCategoryTable({
             onClick={() => setViewingCategory(null)}
           />
 
-          <div className="relative flex h-full w-full max-w-md flex-col gap-6 overflow-y-auto border-l border-gray-150 bg-white p-6.5 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4 dark:border-zinc-800">
-              <h3 className="text-base font-extrabold text-gray-900 dark:text-gray-100">
+          <div className="relative flex h-full w-full max-w-md flex-col gap-6 overflow-y-auto border-l border-gray-150 bg-white p-6.5 shadow-2xl  ">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4 ">
+              <h3 className="text-base font-extrabold text-gray-900 ">
                 Category Details
               </h3>
 
               <button
                 onClick={() => setViewingCategory(null)}
-                className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-zinc-800 dark:hover:text-gray-200"
+                className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600  "
               >
                 <X size={18} />
               </button>
             </div>
 
             <div className="flex flex-col items-center gap-4 text-center">
-              <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50 text-gray-400 dark:border-zinc-800 dark:bg-zinc-850">
+              <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50 text-gray-400  ">
                 <Folder size={36} />
               </div>
 
               <div>
-                <h4 className="text-lg font-extrabold text-gray-900 dark:text-gray-100">
+                <h4 className="text-lg font-extrabold text-gray-900 ">
                   {viewingCategory.name}
                 </h4>
                 <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-gray-400">
@@ -383,7 +381,7 @@ export default function ProjectCategoryTable({
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 border-y border-gray-100 py-4 dark:border-zinc-800">
+            <div className="flex flex-col gap-4 border-y border-gray-100 py-4 ">
               <InfoRow
                 label="Publish Status"
                 value={viewingCategory.isActive ? "Published" : "Draft"}
@@ -402,10 +400,8 @@ export default function ProjectCategoryTable({
             </div>
 
             <div>
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                Description
-              </span>
-              <p className="mt-3 rounded-xl border border-gray-100 bg-gray-50 p-3 text-xs font-medium leading-relaxed text-gray-500 dark:border-zinc-800/30 dark:bg-zinc-850/40 dark:text-gray-400">
+              <span className="text-xs font-bold text-gray-700 ">Description</span>
+              <p className="mt-3 rounded-xl border border-gray-100 bg-gray-50 p-3 text-xs font-medium leading-relaxed text-gray-500 /30 /40 ">
                 {viewingCategory.description || "No description provided."}
               </p>
             </div>
@@ -450,9 +446,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4 text-xs font-semibold">
       <span className="text-gray-500">{label}:</span>
-      <span className="text-right font-bold text-gray-900 dark:text-gray-100">
-        {value}
-      </span>
+      <span className="text-right font-bold text-gray-900 ">{value}</span>
     </div>
   );
 }
