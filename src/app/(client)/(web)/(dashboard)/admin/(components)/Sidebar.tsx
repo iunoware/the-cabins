@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Grid, Boxes, Building2, Settings, Menu, X } from "lucide-react";
+import { toast } from "sonner";
 
 type SubItem = {
   link: string;
@@ -48,6 +49,25 @@ export default function Sidebar() {
       icon: <Settings size={18} className="shrink-0" />,
     },
   ];
+
+  async function handleLogout() {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        toast.error("Logout failed");
+        return;
+      }
+
+      toast.success("Logged out successfully");
+      router.replace("/");
+      router.refresh();
+    } catch {
+      toast.error("Something went wrong");
+    }
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -230,7 +250,10 @@ export default function Sidebar() {
               </h4>
             </div>
           </Link>
-          <button className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="bg-transparent border border-red-100 text-[#e31b23] py-2 rounded-lg cursor-pointer text-xs font-semibold hover:bg-red-50 hover:text-red-700 transition-colors"
+          >
             Logout
           </button>
         </div>
