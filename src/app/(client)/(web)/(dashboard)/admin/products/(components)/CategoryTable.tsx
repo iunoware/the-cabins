@@ -1,67 +1,46 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Search, Eye, Edit2, Trash2, ArrowUpDown, HelpCircle, Check, Play, AlertCircle, X, Image as ImageIcon } from "lucide-react";
 import { useProducts, CategoryState } from "./ProductsContext";
 import ConfirmDialog from "./ConfirmDialog";
 import CategoryModal from "./CategoryModal";
+import { TableSkeleton } from "./SkeletonLoaders";
 
 interface CategoryTableProps {
   onSelectCategory: (id: string) => void;
 }
 
 export default function CategoryTable({ onSelectCategory }: CategoryTableProps) {
-  const { categories, families, products, deleteCategory } = useProducts();
+  const { categories, deleteCategory, loadCategories, isLoading } = useProducts();
 
   // Search & Filter state
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all"); // all, active, draft
   const [sortBy, setSortBy] = useState("newest"); // newest, oldest, name-asc, name-desc
 
-  // Modal / dialog states
-  const [viewingCategory, setViewingCategory] = useState<(CategoryState & { familiesCount: number; productsCount: number }) | null>(null);
   const [editingCatId, setEditingCatId] = useState<string | null>(null);
   const [deletingCat, setDeletingCat] = useState<CategoryState | null>(null);
 
-  // Derive counts and filter/sort categories
-  const processedCategories = useMemo(() => {
-    return categories
-      .map((cat) => {
-        const catFamilies = families.filter((f) => f.categoryId === cat.id);
-        const famIds = catFamilies.map((f) => f.id);
-        const catProducts = products.filter((p) => famIds.includes(p.familyId));
+  // Load categories on search/filter/sort changes (debounced search)
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      loadCategories(search, statusFilter, sortBy);
+    }, 300);
 
-        return {
-          ...cat,
-          familiesCount: catFamilies.length,
-          productsCount: catProducts.length,
-        };
-      })
-      .filter((cat) => {
-        const matchesSearch =
-          cat.name.toLowerCase().includes(search.toLowerCase()) ||
-          cat.description.toLowerCase().includes(search.toLowerCase());
+    return () => clearTimeout(delayDebounce);
+  }, [search, statusFilter, sortBy]);
 
-        const matchesStatus =
-          statusFilter === "all" ||
-          (statusFilter === "active" && cat.active) ||
-          (statusFilter === "draft" && !cat.active);
+  const processedCategories = categories;
 
-        return matchesSearch && matchesStatus;
-      })
-      .sort((a, b) => {
-        if (sortBy === "name-asc") return a.name.localeCompare(b.name);
-        if (sortBy === "name-desc") return b.name.localeCompare(a.name);
-        if (sortBy === "oldest") return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-        // default newest
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-      });
-  }, [categories, families, products, search, statusFilter, sortBy]);
-
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingCat) {
-      deleteCategory(deletingCat.id);
-      setDeletingCat(null);
+      try {
+        await deleteCategory(deletingCat.id);
+        setDeletingCat(null);
+      } catch (err) {
+        // Error toast is already displayed inside context action
+      }
     }
   };
 
@@ -116,7 +95,9 @@ export default function CategoryTable({ onSelectCategory }: CategoryTableProps) 
       </div>
 
       {/* Table Container / Cards view */}
-      {processedCategories.length === 0 ? (
+      {isLoading ? (
+        <TableSkeleton columnsCount={8} rowsCount={5} />
+      ) : processedCategories.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-12 text-center flex flex-col items-center justify-center min-h-[300px] shadow-xs">
           <HelpCircle className="text-gray-300 dark:text-zinc-700 mb-3" size={36} />
           <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">No Categories Found</h4>
@@ -206,7 +187,7 @@ export default function CategoryTable({ onSelectCategory }: CategoryTableProps) 
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setViewingCategory(cat);
+                              onSelectCategory(cat.id);
                             }}
                             className="p-1.5 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/20 rounded-lg text-gray-400 dark:text-gray-500 transition-all cursor-pointer"
                             title="View Details"
@@ -298,7 +279,7 @@ export default function CategoryTable({ onSelectCategory }: CategoryTableProps) 
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewingCategory(cat);
+                      onSelectCategory(cat.id);
                     }}
                     className="p-1.5 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/20 rounded-lg text-gray-400 dark:text-gray-500 transition-all cursor-pointer"
                     title="View Details"
@@ -349,78 +330,6 @@ export default function CategoryTable({ onSelectCategory }: CategoryTableProps) 
         confirmText="Yes, Delete All"
         isDestructive={true}
       />
-
-      {/* View Category Details Modal (Drawer style) */}
-      {viewingCategory && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-end">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setViewingCategory(null)} />
-          
-          {/* Slide-over Content */}
-          <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-gray-150 dark:border-zinc-800 shadow-2xl p-6.5 overflow-y-auto flex flex-col gap-6 animate-[slideInRight_0.25s_ease-out]">
-            <div className="flex justify-between items-center border-b border-gray-100 dark:border-zinc-800 pb-4">
-              <h3 className="text-base font-extrabold text-gray-900 dark:text-gray-100">Category Details</h3>
-              <button onClick={() => setViewingCategory(null)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 text-center mt-2">
-              <div className="w-28 h-28 border border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-850 rounded-2xl overflow-hidden shadow-xs">
-                <img src={viewingCategory.image} alt={viewingCategory.name} className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <h4 className="text-lg font-extrabold text-gray-900 dark:text-gray-100">{viewingCategory.name}</h4>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">Slug: {viewingCategory.slug}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 border-t border-b border-gray-100 dark:border-zinc-800 py-4 mt-2">
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-gray-500">Publish Status:</span>
-                <span className={viewingCategory.active ? "text-emerald-600 font-bold" : "text-gray-500 font-bold"}>
-                  {viewingCategory.active ? "Published" : "Draft"}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-gray-500">Families:</span>
-                <span className="text-gray-900 dark:text-gray-100 font-bold">{viewingCategory.familiesCount} series</span>
-              </div>
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-gray-500">Products (Variants):</span>
-                <span className="text-gray-900 dark:text-gray-100 font-bold">{viewingCategory.productsCount} items</span>
-              </div>
-              <div className="flex justify-between text-xs font-semibold">
-                <span className="text-gray-500">Last Updated:</span>
-                <span className="text-gray-600 dark:text-gray-300 font-medium">
-                  {new Date(viewingCategory.updatedAt).toLocaleString("en-US", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">Description</span>
-              <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-zinc-850/40 p-3 rounded-xl border border-gray-100 dark:border-zinc-800/30 font-medium">
-                {viewingCategory.description || "No description provided."}
-              </p>
-            </div>
-            
-            <button
-              onClick={() => {
-                setEditingCatId(viewingCategory.id);
-                setViewingCategory(null);
-              }}
-              className="mt-auto flex items-center justify-center gap-2 w-full py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs"
-            >
-              <Edit2 size={13} />
-              <span>Edit Category</span>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

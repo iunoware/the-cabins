@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ChevronRight, ArrowLeft, Folder, Layers, Boxes, Plus, RefreshCw, FileQuestion } from "lucide-react";
+import {
+  ChevronRight,
+  ArrowLeft,
+  Folder,
+  Layers,
+  Boxes,
+  Plus,
+  RefreshCw,
+  FileQuestion,
+} from "lucide-react";
 import { ProductsProvider, useProducts } from "./(components)/ProductsContext";
 import CategoryTable from "./(components)/CategoryTable";
 import FamilyTable from "./(components)/FamilyTable";
@@ -11,7 +20,8 @@ import CategoryModal from "./(components)/CategoryModal";
 import FamilyModal from "./(components)/FamilyModal";
 
 function ProductsAdminContent() {
-  const { categories, families, products, isLoading, resetData } = useProducts();
+  const { categories, families, products, isLoading, resetData } =
+    useProducts();
 
   // Hierarchical Navigation State
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
@@ -84,10 +94,13 @@ function ProductsAdminContent() {
 
         {activeCategory && (
           <>
-            <ChevronRight size={14} className="text-gray-300 dark:text-zinc-700" />
+            <ChevronRight
+              size={14}
+              className="text-gray-300 dark:text-zinc-700"
+            />
             <button
               onClick={() => handleBreadcrumbClick("category")}
-              className="hover:text-[#e31b23] dark:hover:text-white transition-colors cursor-pointer max-w-[150px] truncate"
+              className="hover:text-[#e31b23] dark:hover:text-white transition-colors cursor-pointer max-w-37.5 truncate"
               title={activeCategory.name}
             >
               {activeCategory.name}
@@ -97,8 +110,14 @@ function ProductsAdminContent() {
 
         {activeFamily && (
           <>
-            <ChevronRight size={14} className="text-gray-300 dark:text-zinc-700" />
-            <span className="text-gray-900 dark:text-gray-150 max-w-[150px] truncate" title={activeFamily.name}>
+            <ChevronRight
+              size={14}
+              className="text-gray-300 dark:text-zinc-700"
+            />
+            <span
+              className="text-gray-900 dark:text-gray-150 max-w-37.5 truncate"
+              title={activeFamily.name}
+            >
               {activeFamily.name}
             </span>
           </>
@@ -106,15 +125,25 @@ function ProductsAdminContent() {
 
         {pageView === "new" && (
           <>
-            <ChevronRight size={14} className="text-gray-300 dark:text-zinc-700" />
-            <span className="text-gray-450 italic font-medium">New Variant</span>
+            <ChevronRight
+              size={14}
+              className="text-gray-300 dark:text-zinc-700"
+            />
+            <span className="text-gray-450 italic font-medium">
+              New Variant
+            </span>
           </>
         )}
 
         {pageView === "edit" && (
           <>
-            <ChevronRight size={14} className="text-gray-300 dark:text-zinc-700" />
-            <span className="text-gray-450 italic font-medium">Edit Variant</span>
+            <ChevronRight
+              size={14}
+              className="text-gray-300 dark:text-zinc-700"
+            />
+            <span className="text-gray-450 italic font-medium">
+              Edit Variant
+            </span>
           </>
         )}
       </nav>
@@ -172,11 +201,17 @@ function ProductsAdminContent() {
               </header>
 
               {categories.length === 0 && !isLoading ? (
-                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-[350px] shadow-xs">
-                  <FileQuestion className="text-gray-300 dark:text-zinc-700 mb-4" size={42} />
-                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">No Categories Yet</h4>
+                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-87.5 shadow-xs">
+                  <FileQuestion
+                    className="text-gray-300 dark:text-zinc-700 mb-4"
+                    size={42}
+                  />
+                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                    No Categories Yet
+                  </h4>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 mb-6 max-w-sm">
-                    Begin content management by setting up your primary categories of cabins.
+                    Begin content management by setting up your primary
+                    categories of cabins.
                   </p>
                   <button
                     onClick={() => setIsCatModalOpen(true)}
@@ -187,7 +222,9 @@ function ProductsAdminContent() {
                   </button>
                 </div>
               ) : (
-                <CategoryTable onSelectCategory={(id) => setActiveCategoryId(id)} />
+                <CategoryTable
+                  onSelectCategory={(id) => setActiveCategoryId(id)}
+                />
               )}
             </>
           )}
@@ -210,7 +247,8 @@ function ProductsAdminContent() {
                       {activeCategory.name}
                     </h1>
                     <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium">
-                      {activeCategory.description || "Manage this category's family series."}
+                      {activeCategory.description ||
+                        "Manage this category's family series."}
                     </p>
                   </div>
                   {currentCategoryFamiliesCount > 0 && (
@@ -226,11 +264,17 @@ function ProductsAdminContent() {
               </header>
 
               {currentCategoryFamiliesCount === 0 && !isLoading ? (
-                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-[350px] shadow-xs">
-                  <FileQuestion className="text-gray-300 dark:text-zinc-700 mb-4" size={42} />
-                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">No Families Created</h4>
+                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-87.5 shadow-xs">
+                  <FileQuestion
+                    className="text-gray-300 dark:text-zinc-700 mb-4"
+                    size={42}
+                  />
+                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                    No Families Created
+                  </h4>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 mb-6 max-w-sm">
-                    This category does not have any product family series configured yet.
+                    This category does not have any product family series
+                    configured yet.
                   </p>
                   <button
                     onClick={() => setIsFamModalOpen(true)}
@@ -267,8 +311,13 @@ function ProductsAdminContent() {
                       {activeFamily.name}
                     </h1>
                     <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400 font-semibold flex items-center gap-1.5">
-                      <span className="text-gray-450 italic">{activeCategory?.name}</span>
-                      <ChevronRight size={12} className="text-gray-300 dark:text-zinc-800" />
+                      <span className="text-gray-450 italic">
+                        {activeCategory?.name}
+                      </span>
+                      <ChevronRight
+                        size={12}
+                        className="text-gray-300 dark:text-zinc-800"
+                      />
                       <span>{activeFamily.shortDescription}</span>
                     </p>
                   </div>
@@ -285,11 +334,17 @@ function ProductsAdminContent() {
               </header>
 
               {currentFamilyProductsCount === 0 && !isLoading ? (
-                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-[350px] shadow-xs">
-                  <FileQuestion className="text-gray-300 dark:text-zinc-700 mb-4" size={42} />
-                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">No Products Found</h4>
+                <div className="bg-white dark:bg-zinc-900 border border-gray-150 dark:border-zinc-800/80 rounded-2xl p-16 text-center flex flex-col items-center justify-center min-h-87.5 shadow-xs">
+                  <FileQuestion
+                    className="text-gray-300 dark:text-zinc-700 mb-4"
+                    size={42}
+                  />
+                  <h4 className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                    No Products Found
+                  </h4>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 mb-6 max-w-sm">
-                    No individual product variant showcase details exist for this family.
+                    No individual product variant showcase details exist for
+                    this family.
                   </p>
                   <button
                     onClick={() => setPageView("new")}
