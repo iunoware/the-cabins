@@ -85,19 +85,21 @@ interface ProductsContextType {
   products: ProductState[];
   isLoading: boolean;
   loadCategories: (search?: string, status?: string, sortBy?: string) => Promise<void>;
+  loadFamilies: (categoryId?: string) => Promise<void>;
+  loadProducts: (familyId?: string) => Promise<void>;
   // Category Actions
   addCategory: (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => Promise<CategoryState>;
   updateCategory: (id: string, category: Partial<CategoryState>) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   // Family Actions
-  addFamily: (family: Omit<FamilyState, "id" | "updatedAt">) => FamilyState;
-  updateFamily: (id: string, family: Partial<FamilyState>) => void;
-  deleteFamily: (id: string) => void;
+  addFamily: (family: Omit<FamilyState, "id" | "updatedAt">) => Promise<FamilyState>;
+  updateFamily: (id: string, family: Partial<FamilyState>) => Promise<void>;
+  deleteFamily: (id: string) => Promise<void>;
   // Product Actions
-  addProduct: (product: Omit<ProductState, "id" | "updatedAt">) => ProductState;
-  updateProduct: (id: string, product: Partial<ProductState>) => void;
-  deleteProduct: (id: string) => void;
-  duplicateProduct: (id: string) => void;
+  addProduct: (product: Omit<ProductState, "id" | "updatedAt">) => Promise<ProductState>;
+  updateProduct: (id: string, product: Partial<ProductState>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
+  duplicateProduct: (id: string) => Promise<void>;
   // Reset helper
   resetData: () => void;
 }
@@ -123,7 +125,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const query = new URLSearchParams({ search, status, sortBy }).toString();
-      const res = await fetch(`/api/admin/categories?${query}`);
+      const res = await fetch(`/api/admin/product-categories?${query}`);
 
       if (!res.ok) {
         throw new Error(`Error ${res.status}`);
@@ -139,94 +141,56 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Initialize Category and local mock data on mount
-  useEffect(() => {
-    // Load Categories from Backend API
-    loadCategories();
-
-    // Load Families and Products from LocalStorage for UI drilldown fallbacks (Phase 1)
+  // Fetch product families from live backend
+  const loadFamilies = async (categoryId = "") => {
     try {
-      const storedFamilies = localStorage.getItem("admin_families");
-      const storedProducts = localStorage.getItem("admin_products");
-
-      if (storedFamilies && storedProducts) {
-        setFamilies(JSON.parse(storedFamilies));
-        setProducts(JSON.parse(storedProducts));
-      } else {
-        const mappedFamilies: FamilyState[] = [];
-        const mappedProducts: ProductState[] = [];
-
-        // Build initial structures from static export
-        productFamilies.forEach((family) => {
-          const catId = `cat-${slugify(family.category)}`;
-          const famId = `fam-${family.slug}`;
-
-          mappedFamilies.push({
-            id: famId,
-            categoryId: catId,
-            name: family.title,
-            slug: family.slug,
-            shortDescription: family.shortDescription || family.description,
-            thumbnail: family.images[0] || "/images/security-cabin.png",
-            active: true,
-            featured: family.badge === "Popular" || family.badge === "Premium",
-            popular: family.badge === "Popular",
-            updatedAt: new Date().toISOString(),
-          });
-
-          family.variants.forEach((variant) => {
-            mappedProducts.push({
-              id: `prod-${variant.id}`,
-              familyId: famId,
-              name: variant.title,
-              slug: variant.slug,
-              shortDescription: variant.shortDescription || variant.description || "",
-              description: variant.fullDescription || variant.description || "",
-              price: variant.price || "From AED 9,500",
-              brochure: variant.brochure || "",
-              model3d: (variant as any).model3d || "",
-              thumbnail: variant.images[0] || "/images/security-cabin.png",
-              images: variant.images && variant.images.length > 0 ? variant.images : ["/images/security-cabin.png"],
-              specifications: variant.specifications
-                ? variant.specifications.map((s) => ({ parameter: s.label, value: s.value }))
-                : [],
-              features: variant.features
-                ? variant.features.map((f) => ({ title: f.title, description: f.description, icon: f.icon }))
-                : [],
-              active: true,
-              featured: variant.badge === "Popular" || variant.badge === "Featured",
-              updatedAt: new Date().toISOString(),
-              ctaText: "Enquire Now",
-              whatsappNumber: "+971526856240",
-              metaTitle: `${variant.title} | The Cabins`,
-              metaDescription: variant.shortDescription || "",
-              keywords: `${variant.title}, modular cabins, UAE construction`,
-              ogImage: variant.images[0] || "",
-            });
-          });
-        });
-
-        localStorage.setItem("admin_families", JSON.stringify(mappedFamilies));
-        localStorage.setItem("admin_products", JSON.stringify(mappedProducts));
-
-        setFamilies(mappedFamilies);
-        setProducts(mappedProducts);
+      const query = categoryId ? `?categoryId=${categoryId}` : "";
+      const res = await fetch(`/api/admin/product-families${query}`);
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
       }
-    } catch (e) {
-      console.error("Failed to load local families/products mock data:", e);
+      const data = await res.json();
+      setFamilies(data);
+    } catch (err) {
+      console.error("Failed to load families:", err);
+      toast.error("Failed to load families from the server.");
     }
-  }, []);
-
-  // Sync family & products data changes to localStorage
-  const syncToStorage = (fams: FamilyState[], prods: ProductState[]) => {
-    localStorage.setItem("admin_families", JSON.stringify(fams));
-    localStorage.setItem("admin_products", JSON.stringify(prods));
   };
+
+  // Fetch product variants from live backend
+  const loadProducts = async (familyId = "") => {
+    try {
+      const query = familyId ? `?familyId=${familyId}` : "";
+      const res = await fetch(`/api/admin/product-variants${query}`);
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}`);
+      }
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Failed to load products:", err);
+      toast.error("Failed to load products from the server.");
+    }
+  };
+
+  // Initialize and load backend data on mount
+  useEffect(() => {
+    const init = async () => {
+      setIsLoading(true);
+      await Promise.all([
+        loadCategories(),
+        loadFamilies(),
+        loadProducts()
+      ]);
+      setIsLoading(false);
+    };
+    init();
+  }, []);
 
   // CATEGORY ACTIONS
   const addCategory = async (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => {
     try {
-      const res = await fetch("/api/admin/categories", {
+      const res = await fetch("/api/admin/product-categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(category),
@@ -250,7 +214,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
   const updateCategory = async (id: string, category: Partial<CategoryState>) => {
     try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
+      const res = await fetch(`/api/admin/product-categories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(category),
@@ -275,7 +239,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCategory = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/categories/${id}`, {
+      const res = await fetch(`/api/admin/product-categories/${id}`, {
         method: "DELETE",
       });
 
@@ -294,88 +258,181 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   };
 
   // FAMILY ACTIONS
-  const addFamily = (family: Omit<FamilyState, "id" | "updatedAt">) => {
-    const newFam: FamilyState = {
-      ...family,
-      id: `fam-${slugify(family.name)}-${Date.now().toString().slice(-4)}`,
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [...families, newFam];
-    setFamilies(updated);
-    syncToStorage(updated, products);
-    return newFam;
+  const addFamily = async (family: Omit<FamilyState, "id" | "updatedAt">) => {
+    try {
+      const res = await fetch("/api/admin/product-families", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(family),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const newFam = await res.json();
+      setFamilies((prev) => [...prev, newFam]);
+      toast.success("Family series created successfully.");
+      return newFam;
+    } catch (err: any) {
+      console.error("Failed to create family:", err);
+      toast.error(err.message || "Failed to create family series.");
+      throw err;
+    }
   };
 
-  const updateFamily = (id: string, family: Partial<FamilyState>) => {
-    const updated = families.map((fam) =>
-      fam.id === id
-        ? { ...fam, ...family, updatedAt: new Date().toISOString() }
-        : fam
-    );
-    setFamilies(updated);
-    syncToStorage(updated, products);
+  const updateFamily = async (id: string, family: Partial<FamilyState>) => {
+    try {
+      const res = await fetch(`/api/admin/product-families/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(family),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const updatedFam = await res.json();
+      setFamilies((prev) =>
+        prev.map((fam) => (fam.id === id ? updatedFam : fam))
+      );
+      toast.success("Family series updated successfully.");
+    } catch (err: any) {
+      console.error("Failed to update family:", err);
+      toast.error(err.message || "Failed to update family series.");
+      throw err;
+    }
   };
 
-  const deleteFamily = (id: string) => {
-    const updatedFams = families.filter((fam) => fam.id !== id);
-    const updatedProds = products.filter((prod) => prod.familyId !== id);
+  const deleteFamily = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/product-families/${id}`, {
+        method: "DELETE",
+      });
 
-    setFamilies(updatedFams);
-    setProducts(updatedProds);
-    syncToStorage(updatedFams, updatedProds);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      setFamilies((prev) => prev.filter((fam) => fam.id !== id));
+      toast.success("Family series deleted successfully.");
+    } catch (err: any) {
+      console.error("Failed to delete family:", err);
+      toast.error(err.message || "Failed to delete family series.");
+      throw err;
+    }
   };
 
   // PRODUCT ACTIONS
-  const addProduct = (product: Omit<ProductState, "id" | "updatedAt">) => {
-    const newProd: ProductState = {
-      ...product,
-      id: `prod-${slugify(product.name)}-${Date.now().toString().slice(-4)}`,
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [...products, newProd];
-    setProducts(updated);
-    syncToStorage(families, updated);
-    return newProd;
+  const addProduct = async (product: Omit<ProductState, "id" | "updatedAt">) => {
+    try {
+      const res = await fetch("/api/admin/product-variants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const newProd = await res.json();
+      setProducts((prev) => [...prev, newProd]);
+      toast.success("Product variant created successfully.");
+      return newProd;
+    } catch (err: any) {
+      console.error("Failed to create product:", err);
+      toast.error(err.message || "Failed to create product variant.");
+      throw err;
+    }
   };
 
-  const updateProduct = (id: string, product: Partial<ProductState>) => {
-    const updated = products.map((prod) =>
-      prod.id === id
-        ? { ...prod, ...product, updatedAt: new Date().toISOString() }
-        : prod
-    );
-    setProducts(updated);
-    syncToStorage(families, updated);
+  const updateProduct = async (id: string, product: Partial<ProductState>) => {
+    try {
+      const res = await fetch(`/api/admin/product-variants/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      const updatedProd = await res.json();
+      setProducts((prev) =>
+        prev.map((prod) => (prod.id === id ? updatedProd : prod))
+      );
+      toast.success("Product variant updated successfully.");
+    } catch (err: any) {
+      console.error("Failed to update product:", err);
+      toast.error(err.message || "Failed to update product variant.");
+      throw err;
+    }
   };
 
-  const deleteProduct = (id: string) => {
-    const updated = products.filter((prod) => prod.id !== id);
-    setProducts(updated);
-    syncToStorage(families, updated);
+  const deleteProduct = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/product-variants/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error (${res.status})`);
+      }
+
+      setProducts((prev) => prev.filter((prod) => prod.id !== id));
+      toast.success("Product variant deleted successfully.");
+    } catch (err: any) {
+      console.error("Failed to delete product:", err);
+      toast.error(err.message || "Failed to delete product variant.");
+      throw err;
+    }
   };
 
-  const duplicateProduct = (id: string) => {
-    const source = products.find((prod) => prod.id === id);
-    if (!source) return;
+  const duplicateProduct = async (id: string) => {
+    try {
+      const source = products.find((prod) => prod.id === id);
+      if (!source) return;
 
-    const dupName = `${source.name} (Copy)`;
-    const dupSlug = `${source.slug}-copy`;
-    const duplicated: ProductState = {
-      ...source,
-      id: `prod-${slugify(dupName)}-${Date.now().toString().slice(-4)}`,
-      name: dupName,
-      slug: dupSlug,
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [...products, duplicated];
-    setProducts(updated);
-    syncToStorage(families, updated);
+      const dupName = `${source.name} (Copy)`;
+      const dupSlug = `${source.slug}-copy`;
+
+      // Fetch details of source variant to include specification arrays
+      const detailRes = await fetch(`/api/admin/product-variants/${id}`);
+      if (!detailRes.ok) throw new Error("Failed to load details for duplication");
+      const details = await detailRes.json();
+
+      const dupPayload = {
+        ...details,
+        name: dupName,
+        slug: dupSlug,
+        images: details.images?.map((i: any) => i.imageUrl || i) || [],
+        features: details.features?.map((f: any) => ({ title: f.title, description: f.description, icon: f.icon })) || [],
+        specifications: details.specifications?.map((s: any) => ({ parameter: s.parameter, value: s.value })) || [],
+        applications: details.applications?.map((a: any) => ({ title: a.title, icon: a.icon })) || [],
+        faqs: details.faqs?.map((f: any) => ({ question: f.question, answer: f.answer })) || []
+      };
+
+      delete dupPayload.id;
+      delete dupPayload.updatedAt;
+
+      await addProduct(dupPayload);
+    } catch (err: any) {
+      console.error("Failed to duplicate product:", err);
+      toast.error(err.message || "Failed to duplicate product.");
+    }
   };
 
   // Reset to default
   const resetData = () => {
-    localStorage.removeItem("admin_families");
-    localStorage.removeItem("admin_products");
     window.location.reload();
   };
 
@@ -387,6 +444,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         products,
         isLoading,
         loadCategories,
+        loadFamilies,
+        loadProducts,
         addCategory,
         updateCategory,
         deleteCategory,

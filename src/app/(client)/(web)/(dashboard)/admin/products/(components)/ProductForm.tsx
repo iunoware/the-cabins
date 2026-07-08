@@ -254,8 +254,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
   };
 
   // 6. Form Submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSaving) return;
 
     const orig = originalPrice ? parseFloat(originalPrice) : undefined;
     const disc = discountedPrice ? parseFloat(discountedPrice) : undefined;
@@ -282,8 +285,8 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       model3d: model3dName ? `/models/${model3dName}` : "",
       thumbnail: coverImage,
       images: galleryImages.length > 0 ? galleryImages : [coverImage],
-      specifications,
-      features,
+      specifications: specifications.map((s: any) => ({ parameter: s.parameter || s.label, value: s.value })),
+      features: features.map((f: any) => ({ title: f.title, description: f.description, icon: f.icon })),
       active,
       featured,
       ctaText,
@@ -297,12 +300,19 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       currency: currency || "AED",
     };
 
-    if (editId) {
-      updateProduct(editId, payload);
-    } else {
-      addProduct(payload);
+    setIsSaving(true);
+    try {
+      if (editId) {
+        await updateProduct(editId, payload);
+      } else {
+        await addProduct(payload);
+      }
+      onSave();
+    } catch (err) {
+      console.error("Failed to save product variant:", err);
+    } finally {
+      setIsSaving(false);
     }
-    onSave();
   };
 
   // Image reorder helpers
@@ -1117,16 +1127,18 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 border border-gray-250 dark:border-zinc-800 rounded-xl transition-all cursor-pointer select-none"
+            disabled={isSaving}
+            className="px-6 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 border border-gray-250 dark:border-zinc-800 rounded-xl transition-all cursor-pointer select-none disabled:opacity-40"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex items-center gap-1.5 px-7 py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs cursor-pointer select-none"
+            disabled={isSaving}
+            className="flex items-center gap-1.5 px-7 py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs cursor-pointer select-none disabled:opacity-75"
           >
             <Save size={14} />
-            <span>{editId ? "Update Product" : "Save Product Variant"}</span>
+            <span>{isSaving ? "Saving..." : editId ? "Update Product" : "Save Product Variant"}</span>
           </button>
         </div>
       </form>

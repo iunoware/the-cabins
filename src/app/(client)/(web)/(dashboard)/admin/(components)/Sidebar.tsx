@@ -230,7 +230,7 @@ export default function Sidebar() {
         {/* User Profile Section at Bottom */}
         <div className="mt-auto flex flex-col gap-2 border-t border-gray-100 pt-4">
           <Link
-            href="/profile"
+            href="/admin/profile"
             className={`flex items-center gap-3 bg-gray-50 hover:bg-gray-100/80 p-3 rounded-[10px] no-underline cursor-pointer border border-gray-100/50 transition-all ${
               isCollapsed
                 ? "p-0 py-3 justify-center max-[768px]:p-3 max-[768px]:justify-start"

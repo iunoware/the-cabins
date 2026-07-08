@@ -1,33 +1,33 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { productFamilies, categories, Category } from "@/src/data/products";
 import ProductCard from "./ProductCard";
 
 interface ProductsProps {
   dbCategories?: { id: string; name: string; slug: string }[];
+  dbFamilies?: any[];
 }
 
-export default function Products({ dbCategories = [] }: ProductsProps) {
+export default function Products({ dbCategories = [], dbFamilies = [] }: ProductsProps) {
   const categoryNames = useMemo(() => {
     if (dbCategories.length > 0) {
       return ["All Products", ...dbCategories.map((c) => c.name)];
     }
-    return categories;
+    return [];
   }, [dbCategories]);
 
   const [activeCategory, setActiveCategory] = useState<string>("All Products");
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === "All Products") return productFamilies;
+    if (activeCategory === "All Products") return dbFamilies;
 
-    return productFamilies.filter((product) => product.category === activeCategory);
-  }, [activeCategory]);
+    return dbFamilies.filter((product) => product.category === activeCategory);
+  }, [activeCategory, dbFamilies]);
 
   const getCategoryCount = (category: string) => {
-    if (category === "All Products") return productFamilies.length;
+    if (category === "All Products") return dbFamilies.length;
 
-    return productFamilies.filter((product) => product.category === category).length;
+    return dbFamilies.filter((product) => product.category === category).length;
   };
 
   return (
