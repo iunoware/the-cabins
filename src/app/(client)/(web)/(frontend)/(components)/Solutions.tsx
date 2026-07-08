@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { ArrowRight } from "@/src/components/Icons";
+import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -631,12 +632,12 @@ export default function Solutions() {
       className="relative bg-white py-20 md:py-28 overflow-hidden select-none border-b border-gray-100"
       aria-label="Our Modular Solutions"
     >
-      <div className="max-w-[1280px] w-full mx-auto px-4 md:px-6">
+      <div className="max-w-7xl w-full mx-auto px-4 md:px-6">
         {/* Header container */}
-        <div className="text-center max-w-[650px] mx-auto mb-16">
+        <div className="text-center max-w-162.5 mx-auto mb-16">
           {/* Accent Label */}
           <div ref={labelRef} className="flex items-center justify-center gap-3 mb-4">
-            <span className="w-8 h-[2px] bg-[#EF4444] rounded-full shrink-0" />
+            <span className="w-8 h-0.5 bg-[#EF4444] rounded-full shrink-0" />
             <span className="text-[12px] font-bold tracking-[0.3em] uppercase text-[#EF4444]">
               OUR SOLUTIONS
             </span>
@@ -671,20 +672,20 @@ export default function Solutions() {
               className="group relative flex flex-col h-full bg-white rounded-2xl p-4 shadow-[0_2px_12px_rgba(15,23,42,0.05)] transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-1.5 hover:shadow-[0_14px_32px_rgba(15,23,42,0.1)] cursor-pointer"
             >
               {/* Illustration Header Area */}
-              <div className="relative aspect-[4/3] w-full rounded-xl bg-[#F1F3F6] flex items-center justify-center p-5 mb-5">
+              <div className="relative aspect-4/3 w-full rounded-xl bg-[#F1F3F6] flex items-center justify-center p-5 mb-5">
                 {item.badge && (
                   <span className="absolute -top-2 left-3 z-10 bg-black text-white text-[10px] font-bold tracking-widest px-3 py-1.5 rounded-full uppercase leading-none shadow-sm">
                     {item.badge}
                   </span>
                 )}
                 {/* Responsive wrapper for SVG scaling */}
-                <div className="w-full h-full max-w-[170px] max-h-[120px] flex items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-108">
+                <div className="w-full h-full max-w-42.5 max-h-30 flex items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-108">
                   <item.illustration />
                 </div>
               </div>
 
               {/* Card Content body */}
-              <div className="flex flex-col justify-between flex-grow px-1 pb-1">
+              <div className="flex flex-col justify-between grow px-1 pb-1">
                 <div className="mb-4">
                   <h3 className="text-[18px] font-bold text-black group-hover:text-[#EF4444] transition-colors duration-300 mb-2 leading-snug">
                     {item.title}
@@ -697,7 +698,7 @@ export default function Solutions() {
                 {/* View Details arrow link */}
                 <div className="flex items-center gap-1.5 text-sm font-semibold text-[#EF4444]">
                   <span>View Details</span>
-                  <ArrowRight className="w-4 h-4 text-[#EF4444] transition-transform duration-300 group-hover:translate-x-[5px]" />
+                  <ArrowRight className="w-4 h-4 text-[#EF4444] transition-transform duration-300 group-hover:translate-x-1.25" />
                 </div>
               </div>
             </a>
@@ -706,13 +707,13 @@ export default function Solutions() {
 
         {/* View All Products button */}
         <div ref={buttonRef} className="flex justify-center mt-14">
-          <a
+          <Link
             href="/products"
             className="px-8 py-3.5 rounded-full bg-black text-white font-semibold text-[15px] flex items-center justify-center gap-2 group transition-all duration-300 hover:bg-[#D81E2C] hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-black cursor-pointer"
           >
             <span>View All Products</span>
-            <ArrowRight className="w-4.5 h-4.5 text-white transition-transform duration-300 group-hover:translate-x-[6px]" />
-          </a>
+            <ArrowRight className="w-4.5 h-4.5 text-white transition-transform duration-300 group-hover:translate-x-1.5" />
+          </Link>
         </div>
       </div>
     </section>

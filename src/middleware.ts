@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
 
   // If user opens /admin and is logged in, send to dashboard
   if (pathname === "/admin" && isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   // If user opens /admin route and is not logged in, send to login
@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
 
   // If logged-in user opens login page, send to dashboard
   if (isLoginPage && isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   return NextResponse.next();
