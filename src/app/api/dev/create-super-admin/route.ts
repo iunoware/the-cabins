@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const email = "thecabins@gmail.com";
+    const email = "info@thecabins.ae";
     const password = "Thecabins@123";
 
     const passwordHash = await hashPassword(password);
