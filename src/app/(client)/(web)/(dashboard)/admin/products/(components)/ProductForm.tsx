@@ -1,7 +1,32 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { ChevronDown, Plus, Trash2, Upload, FileText, Smartphone, Compass, Globe, Check, Eye, Trash, Edit3, ArrowLeft, ArrowRight, Star, HelpCircle, Save, X, Layers, LayoutDashboard, Sparkles, Boxes, DollarSign, Image as ImageIcon } from "lucide-react";
+import {
+  ChevronDown,
+  Plus,
+  Trash2,
+  Upload,
+  FileText,
+  Smartphone,
+  Compass,
+  Globe,
+  Check,
+  Eye,
+  Trash,
+  Edit3,
+  ArrowLeft,
+  ArrowRight,
+  Star,
+  HelpCircle,
+  Save,
+  X,
+  Layers,
+  LayoutDashboard,
+  Sparkles,
+  Boxes,
+  DollarSign,
+  Image as ImageIcon,
+} from "lucide-react";
 import { useProducts, ProductState, slugify } from "./ProductsContext";
 
 interface ProductFormProps {
@@ -12,8 +37,15 @@ interface ProductFormProps {
   onSave: () => void;
 }
 
-export default function ProductForm({ editId, categoryId, familyId, onCancel, onSave }: ProductFormProps) {
-  const { categories, families, products, addProduct, updateProduct } = useProducts();
+export default function ProductForm({
+  editId,
+  categoryId,
+  familyId,
+  onCancel,
+  onSave,
+}: ProductFormProps) {
+  const { categories, families, products, addProduct, updateProduct } =
+    useProducts();
 
   // Resolve parent names for badges
   const categoryName = useMemo(() => {
@@ -38,12 +70,18 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
   // Specs State
-  const [specifications, setSpecifications] = useState<{ parameter: string; value: string }[]>([]);
+  const [specifications, setSpecifications] = useState<
+    { parameter: string; value: string }[]
+  >([]);
 
   // Features State (Chips)
-  const [features, setFeatures] = useState<{ title: string; description: string }[]>([]);
+  const [features, setFeatures] = useState<
+    { title: string; description: string }[]
+  >([]);
   const [newFeatureText, setNewFeatureText] = useState("");
-  const [editingFeatureIndex, setEditingFeatureIndex] = useState<number | null>(null);
+  const [editingFeatureIndex, setEditingFeatureIndex] = useState<number | null>(
+    null,
+  );
   const [editingFeatureTitle, setEditingFeatureTitle] = useState("");
   const [editingFeatureDesc, setEditingFeatureDesc] = useState("");
 
@@ -92,8 +130,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         setGalleryImages(prod.images || []);
         setSpecifications(prod.specifications || []);
         setFeatures(prod.features || []);
-        setBrochureName(prod.brochure ? prod.brochure.split("/").pop() || "brochure.pdf" : "");
-        setModel3dName(prod.model3d ? prod.model3d.split("/").pop() || "model.glb" : "");
+        setBrochureName(
+          prod.brochure ? prod.brochure.split("/").pop() || "brochure.pdf" : "",
+        );
+        setModel3dName(
+          prod.model3d ? prod.model3d.split("/").pop() || "model.glb" : "",
+        );
         setCtaText(prod.ctaText || "Enquire on WhatsApp");
         setWhatsappNumber(prod.whatsappNumber || "");
         setMetaTitle(prod.metaTitle || "");
@@ -102,8 +144,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         setOgImage(prod.ogImage || "");
         setActive(prod.active);
         setFeatured(prod.featured);
-        setOriginalPrice(prod.originalPrice ? prod.originalPrice.toString() : "");
-        setDiscountedPrice(prod.discountedPrice ? prod.discountedPrice.toString() : "");
+        setOriginalPrice(
+          prod.originalPrice ? prod.originalPrice.toString() : "",
+        );
+        setDiscountedPrice(
+          prod.discountedPrice ? prod.discountedPrice.toString() : "",
+        );
         setCurrency(prod.currency || "AED");
       }
     } else {
@@ -120,7 +166,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         { parameter: "Frame", value: "Structural Steel Frame, epoxy coated" },
       ]);
       setFeatures([
-        { title: "Portable", description: "Relocatable cabin structure with built-in corner slots." },
+        {
+          title: "Portable",
+          description:
+            "Relocatable cabin structure with built-in corner slots.",
+        },
       ]);
       setBrochureName("");
       setModel3dName("");
@@ -200,9 +250,15 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
     setSpecifications((prev) => [...prev, { parameter: "", value: "" }]);
   };
 
-  const handleSpecChange = (index: number, field: "parameter" | "value", val: string) => {
+  const handleSpecChange = (
+    index: number,
+    field: "parameter" | "value",
+    val: string,
+  ) => {
     setSpecifications((prev) =>
-      prev.map((item, idx) => (idx === index ? { ...item, [field]: val } : item))
+      prev.map((item, idx) =>
+        idx === index ? { ...item, [field]: val } : item,
+      ),
     );
   };
 
@@ -213,7 +269,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
   // 5. Features chips manipulation
   const addFeatureChip = () => {
     if (!newFeatureText.trim()) return;
-    const exists = features.some((f) => f.title.toLowerCase() === newFeatureText.trim().toLowerCase());
+    const exists = features.some(
+      (f) => f.title.toLowerCase() === newFeatureText.trim().toLowerCase(),
+    );
     if (exists) {
       alert("Feature chip already exists.");
       return;
@@ -246,9 +304,13 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
     setFeatures((prev) =>
       prev.map((item, idx) =>
         idx === editingFeatureIndex
-          ? { ...item, title: editingFeatureTitle.trim(), description: editingFeatureDesc.trim() }
-          : item
-      )
+          ? {
+              ...item,
+              title: editingFeatureTitle.trim(),
+              description: editingFeatureDesc.trim(),
+            }
+          : item,
+      ),
     );
     setEditingFeatureIndex(null);
   };
@@ -282,11 +344,18 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
       description,
       price: formattedPrice,
       brochure: brochureName ? `/brochures/${brochureName}` : "",
-      model3d: model3dName ? `/models/${model3dName}` : "",
+      model3d: model3dName ? `/3d-models/${model3dName}` : "",
       thumbnail: coverImage,
       images: galleryImages.length > 0 ? galleryImages : [coverImage],
-      specifications: specifications.map((s: any) => ({ parameter: s.parameter || s.label, value: s.value })),
-      features: features.map((f: any) => ({ title: f.title, description: f.description, icon: f.icon })),
+      specifications: specifications.map((s: any) => ({
+        parameter: s.parameter || s.label,
+        value: s.value,
+      })),
+      features: features.map((f: any) => ({
+        title: f.title,
+        description: f.description,
+        icon: f.icon,
+      })),
       active,
       featured,
       ctaText,
@@ -338,7 +407,8 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             {editId ? "Edit Showcase Product" : "New Showcase Product"}
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
-            Configure premium showcase content, specifications, brochures, and 3D files.
+            Configure premium showcase content, specifications, brochures, and
+            3D files.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -512,7 +582,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                   onChange={(e) => setDiscountedPrice(e.target.value)}
                   placeholder="e.g. 9500"
                   className={`w-full text-sm pl-12 pr-4 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold ${
-                    priceError ? "border-red-500 focus:ring-red-200" : "border-gray-100 dark:border-zinc-855"
+                    priceError
+                      ? "border-red-500 focus:ring-red-200"
+                      : "border-gray-100 dark:border-zinc-855"
                   }`}
                 />
               </div>
@@ -540,7 +612,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
               </label>
               <div className="relative aspect-square rounded-2xl border border-gray-100 dark:border-zinc-800 overflow-hidden bg-gray-50 dark:bg-zinc-855/60 flex items-center justify-center">
                 {coverImage ? (
-                  <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
+                  <img
+                    src={coverImage}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <ImageIcon size={32} className="text-gray-300" />
                 )}
@@ -567,15 +643,19 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300">
                 Gallery Images
               </label>
-              
+
               <div className="grid grid-cols-3 gap-3">
                 {galleryImages.map((img, index) => (
                   <div
                     key={index}
                     className="relative aspect-video rounded-xl border border-gray-100 dark:border-zinc-800 overflow-hidden bg-gray-50 dark:bg-zinc-850/40 group shadow-xs"
                   >
-                    <img src={img} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
-                    
+                    <img
+                      src={img}
+                      alt={`Gallery ${index}`}
+                      className="w-full h-full object-cover"
+                    />
+
                     {/* Reordering & Delete Controls */}
                     <div className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5">
                       <button
@@ -597,7 +677,11 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                       </button>
                       <button
                         type="button"
-                        onClick={() => setGalleryImages((prev) => prev.filter((_, idx) => idx !== index))}
+                        onClick={() =>
+                          setGalleryImages((prev) =>
+                            prev.filter((_, idx) => idx !== index),
+                          )
+                        }
                         className="p-1.5 bg-gray-800 hover:bg-red-600 text-white rounded-lg cursor-pointer"
                         title="Remove Image"
                       >
@@ -618,7 +702,10 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
 
                 {/* Upload Trigger */}
                 <label className="aspect-video border-2 border-dashed border-gray-250 dark:border-zinc-800 rounded-xl flex flex-col items-center justify-center hover:border-[#e31b23] dark:hover:border-[#e31b23] transition-colors cursor-pointer bg-gray-50 dark:bg-zinc-850/20 group">
-                  <Plus size={20} className="text-gray-400 group-hover:text-[#e31b23] mb-1" />
+                  <Plus
+                    size={20}
+                    className="text-gray-400 group-hover:text-[#e31b23] mb-1"
+                  />
                   <span className="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider group-hover:text-[#e31b23]">
                     Add image
                   </span>
@@ -633,7 +720,8 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                 </label>
               </div>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold mt-1">
-                Tip: Hover over dynamic gallery cards to reorder slides, swap cover selection, or delete images.
+                Tip: Hover over dynamic gallery cards to reorder slides, swap
+                cover selection, or delete images.
               </p>
             </div>
           </div>
@@ -658,7 +746,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
 
           {specifications.length === 0 ? (
             <div className="text-center py-6 border border-dashed border-gray-150 dark:border-zinc-800 rounded-xl bg-gray-50/50 dark:bg-zinc-900/10">
-              <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold">No custom specifications added.</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold">
+                No custom specifications added.
+              </p>
               <button
                 type="button"
                 onClick={addSpecRow}
@@ -670,18 +760,27 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           ) : (
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-12 gap-3.5 px-2">
-                <span className="col-span-5 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">Specification Name</span>
-                <span className="col-span-6 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">Value / Description</span>
+                <span className="col-span-5 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+                  Specification Name
+                </span>
+                <span className="col-span-6 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+                  Value / Description
+                </span>
                 <span className="col-span-1"></span>
               </div>
               {specifications.map((spec, index) => (
-                <div key={index} className="grid grid-cols-12 gap-3 items-center">
+                <div
+                  key={index}
+                  className="grid grid-cols-12 gap-3 items-center"
+                >
                   <div className="col-span-5">
                     <input
                       required
                       type="text"
                       value={spec.parameter}
-                      onChange={(e) => handleSpecChange(index, "parameter", e.target.value)}
+                      onChange={(e) =>
+                        handleSpecChange(index, "parameter", e.target.value)
+                      }
                       placeholder="e.g. Insulation Core"
                       className="w-full text-xs px-3 py-2 bg-gray-50 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 rounded-xl focus:outline-hidden focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold"
                     />
@@ -691,7 +790,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                       required
                       type="text"
                       value={spec.value}
-                      onChange={(e) => handleSpecChange(index, "value", e.target.value)}
+                      onChange={(e) =>
+                        handleSpecChange(index, "value", e.target.value)
+                      }
                       placeholder="e.g. 50mm polyurethane foam (PU)"
                       className="w-full text-xs px-3 py-2 bg-gray-50 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 rounded-xl focus:outline-hidden focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-medium"
                     />
@@ -713,7 +814,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         </section>
 
         {/* SECTION 4: Features */}
-        <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
+        {/* <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
             <Sparkles size={16} className="text-purple-500" />
             5. Features & Selling Chips
@@ -742,7 +843,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             </button>
           </div>
 
-          {/* Feature chips list */}
+          
           <div className="flex flex-wrap gap-2 mt-2">
             {features.map((feat, index) => (
               <div
@@ -753,7 +854,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                   {feat.title}
                 </span>
                 
-                {/* Actions */}
+                
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
@@ -779,7 +880,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             )}
           </div>
 
-          {/* Feature Chip Edit Sub-section */}
+          
           {editingFeatureIndex !== null && (
             <div className="bg-gray-50 dark:bg-zinc-850/40 p-4 rounded-xl border border-gray-100 dark:border-zinc-805 flex flex-col gap-3.5 animate-[fadeIn_0.2s_ease-out]">
               <div className="flex justify-between items-center">
@@ -826,7 +927,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
               </div>
             </div>
           )}
-        </section>
+        </section> */}
 
         {/* SECTION 5 & 6: 3D Model & Brochure PDF */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -834,9 +935,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-4.5">
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-55 dark:border-zinc-850/50 flex items-center gap-2">
               <Smartphone size={16} className="text-blue-500" />
-              6. Interactive 3D Model
+              5. Interactive 3D Model
             </h3>
-            
+
             <div className="flex flex-col gap-3">
               {model3dName ? (
                 <div className="flex items-center justify-between p-3.5 bg-gray-50 dark:bg-zinc-855/30 rounded-xl border border-gray-100 dark:border-zinc-800/60">
@@ -845,8 +946,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                       <Compass size={18} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[150px]">{model3dName}</span>
-                      <span className="text-[9px] text-gray-400 font-semibold">GLB 3D Container (Simulated)</span>
+                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[150px]">
+                        {model3dName}
+                      </span>
+                      <span className="text-[9px] text-gray-400 font-semibold">
+                        GLB 3D Container (Simulated)
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -871,9 +976,16 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                   onClick={() => model3dInputRef.current?.click()}
                   className="border-2 border-dashed border-gray-250 dark:border-zinc-800 hover:border-blue-500 rounded-xl p-6.5 flex flex-col items-center justify-center transition-colors cursor-pointer bg-gray-50 dark:bg-zinc-850/10 group"
                 >
-                  <Compass size={24} className="text-gray-400 group-hover:text-blue-500 mb-2 transition-colors" />
-                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors">Select .glb File</span>
-                  <span className="text-[10px] text-gray-400 font-semibold mt-1">Ready for future canvas previews</span>
+                  <Compass
+                    size={24}
+                    className="text-gray-400 group-hover:text-blue-500 mb-2 transition-colors"
+                  />
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors">
+                    Select .glb File
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-semibold mt-1">
+                    Ready for future canvas previews
+                  </span>
                 </div>
               )}
               <input
@@ -890,9 +1002,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-4.5">
             <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-855/50 flex items-center gap-2">
               <FileText size={16} className="text-amber-500" />
-              7. Brochure PDF
+              6. Brochure PDF
             </h3>
-            
+
             <div className="flex flex-col gap-3">
               {brochureName ? (
                 <div className="flex items-center justify-between p-3.5 bg-gray-50 dark:bg-zinc-855/30 rounded-xl border border-gray-100 dark:border-zinc-800/60">
@@ -901,8 +1013,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                       <FileText size={18} />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[150px]">{brochureName}</span>
-                      <span className="text-[9px] text-gray-400 font-semibold">Document PDF (Simulated)</span>
+                      <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate max-w-[150px]">
+                        {brochureName}
+                      </span>
+                      <span className="text-[9px] text-gray-400 font-semibold">
+                        Document PDF (Simulated)
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -927,9 +1043,16 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                   onClick={() => brochureInputRef.current?.click()}
                   className="border-2 border-dashed border-gray-250 dark:border-zinc-800 hover:border-amber-500 rounded-xl p-6.5 flex flex-col items-center justify-center transition-colors cursor-pointer bg-gray-50 dark:bg-zinc-850/10 group"
                 >
-                  <FileText size={24} className="text-gray-400 group-hover:text-amber-500 mb-2 transition-colors" />
-                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 group-hover:text-amber-500 transition-colors">Select Brochure PDF</span>
-                  <span className="text-[10px] text-gray-400 font-semibold mt-1">Available for client downloads</span>
+                  <FileText
+                    size={24}
+                    className="text-gray-400 group-hover:text-amber-500 mb-2 transition-colors"
+                  />
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 group-hover:text-amber-500 transition-colors">
+                    Select Brochure PDF
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-semibold mt-1">
+                    Available for client downloads
+                  </span>
                 </div>
               )}
               <input
@@ -947,7 +1070,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-50 dark:border-zinc-850/50 flex items-center gap-2">
             <Smartphone size={16} className="text-emerald-500" />
-            8. WhatsApp Action CTA Overrides
+            7. WhatsApp Action CTA Overrides
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5">
@@ -967,7 +1090,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             <div>
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 flex items-center justify-between">
                 <span>WhatsApp Relocation (Override)</span>
-                <span className="text-[10px] text-gray-400 font-normal">Default: Company Phone</span>
+                <span className="text-[10px] text-gray-400 font-normal">
+                  Default: Company Phone
+                </span>
               </label>
               <input
                 type="text"
@@ -990,7 +1115,7 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           >
             <span className="text-sm font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <Globe size={16} className="text-indigo-500" />
-              9. Search Engine Optimization (SEO)
+              8. Search Engine Optimization (SEO)
             </span>
             <ChevronDown
               size={18}
@@ -1001,7 +1126,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
           {/* Accordion Content */}
           <div
             className={`transition-all duration-300 ease-in-out overflow-hidden ${
-              isSeoExpanded ? "max-h-[500px] border-t border-gray-50 dark:border-zinc-850/50" : "max-h-0"
+              isSeoExpanded
+                ? "max-h-[500px] border-t border-gray-50 dark:border-zinc-850/50"
+                : "max-h-0"
             }`}
           >
             <div className="p-6.5 flex flex-col gap-4">
@@ -1058,7 +1185,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                     placeholder="URL to custom OG card"
                     className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-855 rounded-xl focus:outline-hidden focus:border-[#e31b23] text-gray-900 dark:text-gray-100 font-medium"
                   />
-                  <span className="text-[9px] text-gray-400 font-semibold mt-1 block">Defaults to Cover Image if left empty</span>
+                  <span className="text-[9px] text-gray-400 font-semibold mt-1 block">
+                    Defaults to Cover Image if left empty
+                  </span>
                 </div>
               </div>
             </div>
@@ -1069,15 +1198,19 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
         <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
           <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 pb-3 border-b border-gray-55 dark:border-zinc-855/50 flex items-center gap-2">
             <Compass size={16} className="text-amber-500" />
-            10. Publish Status
+            9. Publish Status
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4.5">
             {/* Publish Radio */}
             <label className="flex items-center justify-between p-3.5 rounded-xl border border-gray-150 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-855/20 cursor-pointer select-none">
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-900 dark:text-gray-100">Publish Immediately</span>
-                <span className="text-[10px] text-gray-400">Available to customers</span>
+                <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                  Publish Immediately
+                </span>
+                <span className="text-[10px] text-gray-400">
+                  Available to customers
+                </span>
               </div>
               <input
                 type="radio"
@@ -1091,8 +1224,12 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             {/* Draft Radio */}
             <label className="flex items-center justify-between p-3.5 rounded-xl border border-gray-150 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-855/20 cursor-pointer select-none">
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-900 dark:text-gray-100">Save as Draft</span>
-                <span className="text-[10px] text-gray-400">Hidden from storefront</span>
+                <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
+                  Save as Draft
+                </span>
+                <span className="text-[10px] text-gray-400">
+                  Hidden from storefront
+                </span>
               </div>
               <input
                 type="radio"
@@ -1110,7 +1247,9 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
                   Featured Product
                   <Star size={13} className="text-amber-500 fill-amber-500" />
                 </span>
-                <span className="text-[10px] text-gray-400">Add to Homepage banner</span>
+                <span className="text-[10px] text-gray-400">
+                  Add to Homepage banner
+                </span>
               </div>
               <input
                 type="checkbox"
@@ -1138,7 +1277,13 @@ export default function ProductForm({ editId, categoryId, familyId, onCancel, on
             className="flex items-center gap-1.5 px-7 py-3 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-xl transition-all shadow-xs cursor-pointer select-none disabled:opacity-75"
           >
             <Save size={14} />
-            <span>{isSaving ? "Saving..." : editId ? "Update Product" : "Save Product Variant"}</span>
+            <span>
+              {isSaving
+                ? "Saving..."
+                : editId
+                  ? "Update Product"
+                  : "Save Product Variant"}
+            </span>
           </button>
         </div>
       </form>

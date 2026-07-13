@@ -21,8 +21,41 @@ if (typeof window !== "undefined") {
 }
 
 interface FeatureGridProps {
-  features: Feature[];
+  features?: Feature[];
 }
+
+const defaultFeatures: Feature[] = [
+  {
+    title: "Weatherproof Insulation",
+    description: "Constructed with high-density insulated sandwich panels offering optimal thermal resistance against regional humidity and heat.",
+    icon: "Thermometer"
+  },
+  {
+    title: "Heavy-Duty Steel Structure",
+    description: "Built on a rigid, engineered structural steel chassis, epoxy coated to resist corrosion and allow safe crane relocation.",
+    icon: "Shield"
+  },
+  {
+    title: "Fire Retardant Materials",
+    description: "Uses fire-rated wall panels and electrical conduits complying with local civil defense and structural safety standards.",
+    icon: "Flame"
+  },
+  {
+    title: "Plug-and-Play Utilities",
+    description: "Comes with pre-installed electrical DB boards, premium switches, lighting sockets, and plumbing points for quick connection.",
+    icon: "Zap"
+  },
+  {
+    title: "Zero Site-Assembly",
+    description: "Fully fabricated, wired, and finished in-house at our factory and delivered complete, eliminating on-site disruption.",
+    icon: "Hammer"
+  },
+  {
+    title: "Optimized Space Layout",
+    description: "Smart interior planning featuring maximized room clearances, robust window structures, and optimized airflow layouts.",
+    icon: "Maximize"
+  }
+];
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Shield,
@@ -34,7 +67,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Settings,
 };
 
-export default function FeatureGrid({ features }: FeatureGridProps) {
+export default function FeatureGrid({ features = [] }: FeatureGridProps) {
+  const displayFeatures = features.length > 0 ? features : defaultFeatures;
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -83,7 +117,7 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature, index) => {
+        {displayFeatures.map((feature, index) => {
           const IconComponent = iconMap[feature.icon] || HelpCircle;
 
           return (

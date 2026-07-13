@@ -1,14 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 
 interface ProductsProps {
   dbCategories?: { id: string; name: string; slug: string }[];
   dbFamilies?: any[];
+  initialCategory?: string;
 }
 
-export default function Products({ dbCategories = [], dbFamilies = [] }: ProductsProps) {
+export default function Products({ dbCategories = [], dbFamilies = [], initialCategory = "" }: ProductsProps) {
   const categoryNames = useMemo(() => {
     if (dbCategories.length > 0) {
       return ["All Products", ...dbCategories.map((c) => c.name)];
@@ -16,7 +17,32 @@ export default function Products({ dbCategories = [], dbFamilies = [] }: Product
     return [];
   }, [dbCategories]);
 
-  const [activeCategory, setActiveCategory] = useState<string>("All Products");
+  // Find category name corresponding to initialCategory parameter
+  const resolvedCategory = useMemo(() => {
+    if (!initialCategory) return "All Products";
+    const found = dbCategories.find(
+      (c) =>
+        c.name.toLowerCase() === initialCategory.toLowerCase() ||
+        c.slug.toLowerCase() === initialCategory.toLowerCase()
+    );
+    return found ? found.name : "All Products";
+  }, [initialCategory, dbCategories]);
+
+  const [activeCategory, setActiveCategory] = useState<string>(resolvedCategory);
+
+  // Sync category state when initialCategory param changes
+  useEffect(() => {
+    if (initialCategory) {
+      const found = dbCategories.find(
+        (c) =>
+          c.name.toLowerCase() === initialCategory.toLowerCase() ||
+          c.slug.toLowerCase() === initialCategory.toLowerCase()
+      );
+      setActiveCategory(found ? found.name : "All Products");
+    } else {
+      setActiveCategory("All Products");
+    }
+  }, [initialCategory, dbCategories]);
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === "All Products") return dbFamilies;

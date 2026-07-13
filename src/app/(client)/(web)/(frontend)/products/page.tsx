@@ -3,7 +3,13 @@ import Products from "./(components)/Products";
 import Cta from "@/src/components/Cta";
 import { prisma } from "@/src/db/prisma";
 
-export default async function ProductsPage() {
+interface PageProps {
+  searchParams: Promise<{ category?: string }>;
+}
+
+export default async function ProductsPage({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const initialCategory = resolvedSearchParams.category || "";
   const dbCategories = await prisma.productCategory.findMany({
     where: { active: true },
     orderBy: { sortOrder: "asc" }
@@ -59,7 +65,11 @@ export default async function ProductsPage() {
   return (
     <>
       <Hero title="Our Products" currentPage="Products" />
-      <Products dbCategories={formattedCategories} dbFamilies={formattedFamilies} />
+      <Products
+        dbCategories={formattedCategories}
+        dbFamilies={formattedFamilies}
+        initialCategory={initialCategory}
+      />
       <Cta
         title="Need a Custom Solution?"
         description="We build cabins to your exact requirements. Tell us your brief and we'll engineer it."

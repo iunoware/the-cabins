@@ -12,10 +12,34 @@ if (typeof window !== "undefined") {
 }
 
 interface FAQAccordionProps {
-  faq: FAQ[];
+  faq?: FAQ[];
 }
 
-export default function FAQAccordion({ faq }: FAQAccordionProps) {
+const defaultFaqs: FAQ[] = [
+  {
+    question: "How long does it take to manufacture and deliver a cabin?",
+    answer: "Our standard manufacturing timeline ranges from 7 to 14 working days depending on the customization and size. Delivery is arranged using specialized flatbed trucks to your site across the UAE and GCC."
+  },
+  {
+    question: "Do I need site preparation or special foundation before installation?",
+    answer: "Minimal site preparation is required. The ground should be level, compacted, and preferably have concrete blocks or a concrete slab at the corners to support the cabin frame. We provide structural drawings to guide your site preparation."
+  },
+  {
+    question: "Are the cabins insulated and weatherproof for extreme weather conditions?",
+    answer: "Yes, all our cabins are constructed with high-density polyurethane (PU) or rockwool insulated sandwich panels, offering superior thermal insulation to withstand high temperatures (up to 55°C) and extreme Middle East regional humidity."
+  },
+  {
+    question: "Can the interior layout, electrical outlets, and plumbing be customized?",
+    answer: "Absolutely. We provide fully customized solutions. You can choose the placement of doors, windows, AC units, electrical sockets, pantry sinks, and partition walls during the order configuration phase."
+  },
+  {
+    question: "What warranty and post-installation support do you offer?",
+    answer: "We offer a 1-year structural warranty on all our modular cabins, covering manufacturing defects, leakage, and insulation. Our maintenance team is available for on-site support and relocation assistance."
+  }
+];
+
+export default function FAQAccordion({ faq = [] }: FAQAccordionProps) {
+  const displayFaq = faq.length > 0 ? faq : defaultFaqs;
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +91,7 @@ export default function FAQAccordion({ faq }: FAQAccordionProps) {
       </div>
 
       <div className="max-w-4xl border border-gray-200 rounded-3xl overflow-hidden bg-white shadow-sm divide-y divide-gray-200">
-        {faq.map((item, index) => {
+        {displayFaq.map((item, index) => {
           const isOpen = index === activeIndex;
 
           return (
