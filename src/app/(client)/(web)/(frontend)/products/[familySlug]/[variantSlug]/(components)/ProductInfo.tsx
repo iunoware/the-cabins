@@ -69,11 +69,33 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </h1>
 
         {/* Price Tag */}
-        <div className="info-fade mt-3 flex items-center gap-2">
+        <div className="info-fade mt-3 flex items-center gap-2.5">
           <span className="text-[#E71F32] font-black text-lg">→</span>
-          <span className="text-xl font-black text-[#111217] tracking-tight">
-            {product.price}
-          </span>
+          {product.originalPrice && product.discountedPrice ? (
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="text-2xl font-black text-[#E71F32] tracking-tight">
+                AED {Number(product.discountedPrice).toLocaleString()}
+              </span>
+              <span className="text-sm font-bold text-gray-400 line-through">
+                AED {Number(product.originalPrice).toLocaleString()}
+              </span>
+              <span className="bg-red-50 text-[#E71F32] text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                Sale
+              </span>
+            </div>
+          ) : product.originalPrice ? (
+            <span className="text-xl font-black text-[#111217] tracking-tight">
+              AED {Number(product.originalPrice).toLocaleString()}
+            </span>
+          ) : product.price && product.price !== "Price on Enquiry" ? (
+            <span className="text-xl font-black text-[#111217] tracking-tight">
+              {product.price}
+            </span>
+          ) : (
+            <span className="text-xl font-black text-[#111217] tracking-tight text-gray-400">
+              Price on Enquiry
+            </span>
+          )}
         </div>
 
         {/* Short Description */}

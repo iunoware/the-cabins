@@ -179,6 +179,8 @@ model ProductCategory {
   image       String?
   sortOrder   Int      @default(0)
   active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  badge       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -220,6 +222,8 @@ model ProductVariant {
   shortDescription String
   description      String   @db.Text
   price            Decimal? @db.Decimal(10, 2)
+  originalPrice    Decimal? @db.Decimal(10, 2)
+  discountedPrice  Decimal? @db.Decimal(10, 2)
   currency         String   @default("AED")
   dimensions       String?
   capacity         String?
@@ -227,6 +231,12 @@ model ProductVariant {
   warranty         String?
   brochure         String?
   model3d          String?
+  ctaText          String?
+  whatsappNumber   String?
+  metaTitle        String?
+  metaDescription  String?  @db.Text
+  keywords         String?  @db.Text
+  ogImage          String?
   thumbnail        String
   featured         Boolean  @default(false)
   active           Boolean  @default(true)

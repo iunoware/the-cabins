@@ -82,7 +82,7 @@ export async function GET(request: Request) {
       take = limitNum;
     }
 
-    // Query product variants
+    // Query product variants with child relations included
     const dbVariants = await prisma.productVariant.findMany({
       where,
       orderBy,
@@ -99,11 +99,16 @@ export async function GET(request: Request) {
               select: { id: true, name: true, slug: true }
             }
           }
-        }
+        },
+        images: { orderBy: { sortOrder: "asc" } },
+        specifications: { orderBy: { sortOrder: "asc" } },
+        features: { orderBy: { sortOrder: "asc" } },
+        applications: { orderBy: { sortOrder: "asc" } },
+        faqs: { orderBy: { sortOrder: "asc" } }
       }
     });
 
-    // Map formatted values
+    // Map formatted values including nested arrays
     const variants = dbVariants.map((v) => ({
       id: v.id,
       familyId: v.familyId,
@@ -117,6 +122,8 @@ export async function GET(request: Request) {
       shortDescription: v.shortDescription,
       description: v.description,
       price: v.price ? Number(v.price) : null,
+      originalPrice: v.originalPrice ? Number(v.originalPrice) : null,
+      discountedPrice: v.discountedPrice ? Number(v.discountedPrice) : null,
       currency: v.currency,
       dimensions: v.dimensions || "",
       capacity: v.capacity || "",
@@ -124,11 +131,22 @@ export async function GET(request: Request) {
       warranty: v.warranty || "",
       brochure: v.brochure || "",
       model3d: v.model3d || "",
+      ctaText: v.ctaText || "Enquire on WhatsApp",
+      whatsappNumber: v.whatsappNumber || "",
+      metaTitle: v.metaTitle || "",
+      metaDescription: v.metaDescription || "",
+      keywords: v.keywords || "",
+      ogImage: v.ogImage || "",
       thumbnail: v.thumbnail,
       featured: v.featured,
       active: v.active,
       sortOrder: v.sortOrder,
-      updatedAt: v.updatedAt.toISOString()
+      updatedAt: v.updatedAt.toISOString(),
+      images: v.images.map((img) => img.imageUrl),
+      specifications: v.specifications.map((s) => ({ parameter: s.parameter, value: s.value })),
+      features: v.features.map((f) => ({ title: f.title, description: f.description, icon: f.icon })),
+      applications: v.applications.map((a) => ({ title: a.title, icon: a.icon })),
+      faqs: v.faqs.map((faq) => ({ question: faq.question, answer: faq.answer }))
     }));
 
     return NextResponse.json(variants);
@@ -156,6 +174,8 @@ export async function POST(request: Request) {
       shortDescription,
       description,
       price,
+      originalPrice,
+      discountedPrice,
       currency,
       dimensions,
       capacity,
@@ -167,6 +187,12 @@ export async function POST(request: Request) {
       featured,
       active,
       sortOrder,
+      ctaText,
+      whatsappNumber,
+      metaTitle,
+      metaDescription,
+      keywords,
+      ogImage,
       images = [],
       features = [],
       specifications = [],
@@ -214,6 +240,16 @@ export async function POST(request: Request) {
       );
     }
 
+    const orig = originalPrice !== undefined && originalPrice !== null && originalPrice !== "" ? Number(originalPrice) : null;
+    const disc = discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "" ? Number(discountedPrice) : null;
+    let finalPrice = disc !== null ? disc : (orig !== null ? orig : null);
+    if (finalPrice === null && price !== undefined && price !== null && price !== "") {
+      const parsedPrice = Number(price);
+      if (!isNaN(parsedPrice)) {
+        finalPrice = parsedPrice;
+      }
+    }
+
     // Create everything in a transaction
     const result = await prisma.$transaction(async (tx) => {
       const variant = await tx.productVariant.create({
@@ -223,15 +259,23 @@ export async function POST(request: Request) {
           slug,
           shortDescription: shortDescription?.trim() || "",
           description: description?.trim() || "",
-          price: price !== undefined && price !== null && price !== "" ? Number(price) : null,
+          price: finalPrice,
+          originalPrice: orig,
+          discountedPrice: disc,
           currency: currency || "AED",
           dimensions: dimensions || "",
           capacity: capacity || "",
           material: material || "",
           warranty: warranty || "",
-          thumbnail: thumbnail || "/images/security-cabin.png",
           brochure: brochure || "",
           model3d: model3d || "",
+          ctaText: ctaText || "Enquire on WhatsApp",
+          whatsappNumber: whatsappNumber || "",
+          metaTitle: metaTitle || `${name} | The Cabins`,
+          metaDescription: metaDescription || shortDescription || "",
+          keywords: keywords || "",
+          ogImage: ogImage || thumbnail || "/images/security-cabin.png",
+          thumbnail: thumbnail || "/images/security-cabin.png",
           featured: featured !== undefined ? !!featured : false,
           active: active !== undefined ? !!active : true,
           sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : 0

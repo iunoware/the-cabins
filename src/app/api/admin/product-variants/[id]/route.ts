@@ -70,6 +70,8 @@ export async function GET(
       shortDescription: variant.shortDescription,
       description: variant.description,
       price: variant.price ? Number(variant.price) : null,
+      originalPrice: variant.originalPrice ? Number(variant.originalPrice) : null,
+      discountedPrice: variant.discountedPrice ? Number(variant.discountedPrice) : null,
       currency: variant.currency,
       dimensions: variant.dimensions || "",
       capacity: variant.capacity || "",
@@ -77,6 +79,12 @@ export async function GET(
       warranty: variant.warranty || "",
       brochure: variant.brochure || "",
       model3d: variant.model3d || "",
+      ctaText: variant.ctaText || "Enquire on WhatsApp",
+      whatsappNumber: variant.whatsappNumber || "",
+      metaTitle: variant.metaTitle || "",
+      metaDescription: variant.metaDescription || "",
+      keywords: variant.keywords || "",
+      ogImage: variant.ogImage || "",
       thumbnail: variant.thumbnail,
       featured: variant.featured,
       active: variant.active,
@@ -116,6 +124,8 @@ export async function PATCH(
       shortDescription,
       description,
       price,
+      originalPrice,
+      discountedPrice,
       currency,
       dimensions,
       capacity,
@@ -127,6 +137,12 @@ export async function PATCH(
       featured,
       active,
       sortOrder,
+      ctaText,
+      whatsappNumber,
+      metaTitle,
+      metaDescription,
+      keywords,
+      ogImage,
       images,
       features,
       specifications,
@@ -171,17 +187,42 @@ export async function PATCH(
       }
     }
 
+    // Calculate price updates if originalPrice or discountedPrice are sent in the body
+    let finalPrice: number | null | undefined = undefined;
+    let orig: number | null | undefined = undefined;
+    let disc: number | null | undefined = undefined;
+
+    if (originalPrice !== undefined || discountedPrice !== undefined) {
+      const currentOriginal = originalPrice !== undefined ? originalPrice : (variant.originalPrice ? Number(variant.originalPrice) : null);
+      const currentDiscounted = discountedPrice !== undefined ? discountedPrice : (variant.discountedPrice ? Number(variant.discountedPrice) : null);
+
+      orig = currentOriginal !== null && currentOriginal !== "" ? Number(currentOriginal) : null;
+      disc = currentDiscounted !== null && currentDiscounted !== "" ? Number(currentDiscounted) : null;
+      finalPrice = disc !== null ? disc : (orig !== null ? orig : null);
+    } else if (price !== undefined) {
+      if (price === null || price === "") {
+        finalPrice = null;
+      } else {
+        const parsedPrice = Number(price);
+        if (!isNaN(parsedPrice)) {
+          finalPrice = parsedPrice;
+        }
+      }
+    }
+
     // Run transaction
     const result = await prisma.$transaction(async (tx) => {
       const updated = await tx.productVariant.update({
         where: { id },
         data: {
-          familyId: familyId !== undefined ? familyId : undefined,
+          family: familyId !== undefined ? { connect: { id: familyId } } : undefined,
           name: name !== undefined ? name.trim() : undefined,
           slug,
           shortDescription: shortDescription !== undefined ? shortDescription.trim() : undefined,
           description: description !== undefined ? description.trim() : undefined,
-          price: price !== undefined ? (price !== null && price !== "" ? Number(price) : null) : undefined,
+          price: finalPrice !== undefined ? finalPrice : undefined,
+          originalPrice: orig !== undefined ? orig : undefined,
+          discountedPrice: disc !== undefined ? disc : undefined,
           currency: currency !== undefined ? currency : undefined,
           dimensions: dimensions !== undefined ? dimensions : undefined,
           capacity: capacity !== undefined ? capacity : undefined,
@@ -190,6 +231,12 @@ export async function PATCH(
           thumbnail: thumbnail !== undefined ? thumbnail : undefined,
           brochure: brochure !== undefined ? brochure : undefined,
           model3d: model3d !== undefined ? model3d : undefined,
+          ctaText: ctaText !== undefined ? ctaText : undefined,
+          whatsappNumber: whatsappNumber !== undefined ? whatsappNumber : undefined,
+          metaTitle: metaTitle !== undefined ? metaTitle : undefined,
+          metaDescription: metaDescription !== undefined ? metaDescription : undefined,
+          keywords: keywords !== undefined ? keywords : undefined,
+          ogImage: ogImage !== undefined ? ogImage : undefined,
           featured: featured !== undefined ? !!featured : undefined,
           active: active !== undefined ? !!active : undefined,
           sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : undefined

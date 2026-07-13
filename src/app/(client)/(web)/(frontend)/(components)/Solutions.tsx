@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
 import { ArrowRight } from "@/src/components/Icons";
 import Link from "next/link";
+import Image from "next/image";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -292,7 +293,14 @@ const AccommodationCabinSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line x1="134" y1="65" x2="134" y2="89" stroke="#1E293B" strokeWidth="2.5" />
+    <line
+      x1="134"
+      y1="65"
+      x2="134"
+      y2="89"
+      stroke="#1E293B"
+      strokeWidth="2.5"
+    />
 
     {/* Window 4 */}
     <rect
@@ -304,7 +312,14 @@ const AccommodationCabinSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line x1="158" y1="65" x2="158" y2="89" stroke="#1E293B" strokeWidth="2.5" />
+    <line
+      x1="158"
+      y1="65"
+      x2="158"
+      y2="89"
+      stroke="#1E293B"
+      strokeWidth="2.5"
+    />
   </svg>
 );
 
@@ -330,9 +345,19 @@ const ContainerOfficeSVG = () => (
     />
 
     {/* Corrugation lines */}
-    {[55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185].map((x) => (
-      <line key={x} x1={x} y1="52" x2={x} y2="133" stroke="#334155" strokeWidth="2" />
-    ))}
+    {[55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 155, 165, 175, 185].map(
+      (x) => (
+        <line
+          key={x}
+          x1={x}
+          y1="52"
+          x2={x}
+          y2="133"
+          stroke="#334155"
+          strokeWidth="2"
+        />
+      ),
+    )}
 
     {/* Office cutout pane */}
     <rect
@@ -412,7 +437,14 @@ const ContainerBuildingSVG = () => (
       stroke="#1E293B"
       strokeWidth="4"
     />
-    <line x1="100" y1="102" x2="100" y2="130" stroke="#1E293B" strokeWidth="3" />
+    <line
+      x1="100"
+      y1="102"
+      x2="100"
+      y2="130"
+      stroke="#1E293B"
+      strokeWidth="3"
+    />
 
     {/* Top Container */}
     <rect
@@ -452,13 +484,114 @@ const ContainerBuildingSVG = () => (
   </svg>
 );
 
-interface SolutionItem {
-  title: string;
-  description: string;
-  href: string;
-  badge?: "POPULAR" | "NEW";
-  illustration: () => React.JSX.Element;
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  featured: boolean;
+  badge: string | null;
 }
+
+const getIllustration = (slug: string) => {
+  switch (slug) {
+    case "security-cabins":
+      return <SecurityCabinSVG />;
+    case "portable-cabins":
+      return <PortableCabinSVG />;
+    case "office-cabins":
+      return <OfficeCabinSVG />;
+    case "accommodation-cabins":
+    case "accommodation":
+      return <AccommodationCabinSVG />;
+    case "container-offices":
+      return <ContainerOfficeSVG />;
+    case "container-buildings":
+      return <ContainerBuildingSVG />;
+    default:
+      return null;
+  }
+};
+
+const CategorySkeleton = () => (
+  <div className="relative flex flex-col h-full bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.05)] border border-gray-100 dark:border-zinc-800/40 overflow-hidden animate-pulse">
+    <div className="w-full h-[220px] sm:h-[240px] md:h-[250px] bg-gray-150 dark:bg-zinc-800" />
+    <div className="flex flex-col justify-between grow p-5">
+      <div className="mb-4">
+        <div className="h-5 bg-gray-100 dark:bg-zinc-800 rounded-md w-2/3 mb-3" />
+        <div className="h-3.5 bg-gray-100 dark:bg-zinc-800 rounded-md w-full mb-2" />
+        <div className="h-3.5 bg-gray-100 dark:bg-zinc-800 rounded-md w-5/6" />
+      </div>
+      <div className="h-4 bg-gray-100 dark:bg-zinc-800 rounded-md w-24" />
+    </div>
+  </div>
+);
+
+const EmptyState = () => (
+  <div className="col-span-full py-16 text-center bg-gray-50/50 dark:bg-zinc-900/30 rounded-2xl border border-dashed border-gray-200 dark:border-zinc-800 flex flex-col items-center justify-center p-8">
+    <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-4 text-[#EF4444]">
+      <svg
+        className="w-8 h-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+        />
+      </svg>
+    </div>
+    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
+      No Categories Found
+    </h3>
+    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm">
+      We are currently setting up our products. Please check back soon or
+      contact our sales team for direct support.
+    </p>
+  </div>
+);
+
+const ErrorState = ({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) => (
+  <div className="col-span-full py-16 text-center bg-red-50/10 dark:bg-red-950/5 rounded-2xl border border-red-100 dark:border-red-900/30 flex flex-col items-center justify-center p-8">
+    <div className="w-16 h-16 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center mb-4 text-[#EF4444]">
+      <svg
+        className="w-8 h-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+        />
+      </svg>
+    </div>
+    <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
+      Failed to load solutions
+    </h3>
+    <p className="text-red-500/80 dark:text-red-400/80 text-sm mb-4 max-w-sm">
+      {message}
+    </p>
+    <button
+      onClick={onRetry}
+      className="px-6 py-2 rounded-full bg-black dark:bg-zinc-800 text-white text-xs font-bold hover:bg-[#D81E2C] dark:hover:bg-[#D81E2C] transition-colors cursor-pointer"
+    >
+      Try Again
+    </button>
+  </div>
+);
 
 export default function Solutions() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -468,49 +601,38 @@ export default function Solutions() {
   const gridRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
-  const solutionsData: SolutionItem[] = [
-    {
-      title: "Security Cabins",
-      description: "Compact, durable guard booths with panoramic visibility.",
-      href: "/products",
-      badge: "POPULAR",
-      illustration: SecurityCabinSVG,
-    },
-    {
-      title: "Portable Cabins",
-      description: "Relocatable site offices ready for immediate use.",
-      href: "/products",
-      illustration: PortableCabinSVG,
-    },
-    {
-      title: "Office Cabins",
-      description: "Insulated, climate-ready workspaces with premium finishes.",
-      href: "/products",
-      illustration: OfficeCabinSVG,
-    },
-    {
-      title: "Accommodation Cabins",
-      description: "Comfortable labour & staff housing built for the climate.",
-      href: "/products",
-      illustration: AccommodationCabinSVG,
-    },
-    {
-      title: "Container Offices",
-      description: "Heavy-duty shipping containers repurposed into premium workspaces.",
-      href: "/products",
-      badge: "NEW",
-      illustration: ContainerOfficeSVG,
-    },
-    {
-      title: "Container Buildings",
-      description: "Scalable, modular multi-level structures for fast deployment.",
-      href: "/products",
-      illustration: ContainerBuildingSVG,
-    },
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/products/categories");
+      if (!res.ok) {
+        throw new Error(`Failed to load categories (status: ${res.status})`);
+      }
+      const data = await res.json();
+      setCategories(data);
+    } catch (err: any) {
+      console.error(err);
+      setError(
+        err.message || "Something went wrong while fetching categories.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useGSAP(
     () => {
+      if (isLoading || categories.length === 0) return;
+
       // 1. Respect prefers-reduced-motion
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -546,7 +668,12 @@ export default function Solutions() {
 
       // 3. Setup initial state
       gsap.set(
-        [labelRef.current, descRef.current, gridRef.current?.children, buttonRef.current],
+        [
+          labelRef.current,
+          descRef.current,
+          gridRef.current?.children,
+          buttonRef.current,
+        ],
         {
           opacity: 0,
         },
@@ -623,7 +750,7 @@ export default function Solutions() {
         split.revert();
       };
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [isLoading, categories] },
   );
 
   return (
@@ -636,7 +763,10 @@ export default function Solutions() {
         {/* Header container */}
         <div className="text-center max-w-162.5 mx-auto mb-16">
           {/* Accent Label */}
-          <div ref={labelRef} className="flex items-center justify-center gap-3 mb-4">
+          <div
+            ref={labelRef}
+            className="flex items-center justify-center gap-3 mb-4"
+          >
             <span className="w-8 h-0.5 bg-[#EF4444] rounded-full shrink-0" />
             <span className="text-[12px] font-bold tracking-[0.3em] uppercase text-[#EF4444]">
               OUR SOLUTIONS
@@ -648,7 +778,8 @@ export default function Solutions() {
             ref={headingRef}
             className="text-[32px] sm:text-[40px] md:text-[48px] font-black text-black leading-tight tracking-tight uppercase mb-6"
           >
-            Modular Solutions for <span className="text-[#EF4444]">Every Need</span>
+            Modular Solutions for{" "}
+            <span className="text-[#EF4444]">Every Need</span>
           </h2>
 
           {/* Description */}
@@ -656,7 +787,8 @@ export default function Solutions() {
             ref={descRef}
             className="text-gray-500 text-[16px] md:text-[18px] leading-[1.7] font-medium"
           >
-            engineered, manufactured and finished in-house to international standards.
+            engineered, manufactured and finished in-house to international
+            standards.
           </p>
         </div>
 
@@ -665,44 +797,77 @@ export default function Solutions() {
           ref={gridRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 items-stretch"
         >
-          {solutionsData.map((item, index) => (
-            <a
-              key={index}
-              href={item.href}
-              className="group relative flex flex-col h-full bg-white rounded-2xl p-4 shadow-[0_2px_12px_rgba(15,23,42,0.05)] transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-1.5 hover:shadow-[0_14px_32px_rgba(15,23,42,0.1)] cursor-pointer"
-            >
-              {/* Illustration Header Area */}
-              <div className="relative aspect-4/3 w-full rounded-xl bg-[#F1F3F6] flex items-center justify-center p-5 mb-5">
-                {item.badge && (
-                  <span className="absolute -top-2 left-3 z-10 bg-black text-white text-[10px] font-bold tracking-widest px-3 py-1.5 rounded-full uppercase leading-none shadow-sm">
-                    {item.badge}
-                  </span>
-                )}
-                {/* Responsive wrapper for SVG scaling */}
-                <div className="w-full h-full max-w-42.5 max-h-30 flex items-center justify-center transition-transform duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-108">
-                  <item.illustration />
-                </div>
-              </div>
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <CategorySkeleton key={idx} />
+            ))
+          ) : error ? (
+            <ErrorState message={error} onRetry={fetchCategories} />
+          ) : categories.length === 0 ? (
+            <EmptyState />
+          ) : (
+            categories.map((item) => {
+              const illustration = getIllustration(item.slug);
+              return (
+                <Link
+                  key={item.id}
+                  href={`/products?category=${item.slug}`}
+                  className="group relative flex flex-col h-full bg-white rounded-2xl shadow-[0_2px_12px_rgba(15,23,42,0.05)] border border-gray-100/50 dark:border-zinc-800/20 overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] hover:-translate-y-1.5 hover:shadow-[0_14px_32px_rgba(15,23,42,0.1)] cursor-pointer"
+                >
+                  {/* Illustration/Image Header Area */}
+                  <div className="relative w-full h-55 sm:h-60 md:h-62.5 bg-[#F1F3F6] flex items-center justify-center overflow-hidden shrink-0">
+                    {(item.badge || item.featured) && (
+                      <span className="absolute top-3 left-3 z-10 bg-black text-white text-[10px] font-bold tracking-widest px-3 py-1.5 rounded-full uppercase leading-none shadow-sm">
+                        {item.badge || "FEATURED"}
+                      </span>
+                    )}
+                    {/* Zoom wrapper for cover images and illustration fallback */}
+                    <div className="relative w-full h-full flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105">
+                      {item.image ? (
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover object-center"
+                        />
+                      ) : illustration ? (
+                        <div className="w-full h-full max-w-42.5 max-h-30 flex items-center justify-center p-5">
+                          {illustration}
+                        </div>
+                      ) : (
+                        <Image
+                          src="/images/security-cabin.png"
+                          alt={item.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover opacity-40 group-hover:opacity-60 transition-opacity"
+                        />
+                      )}
+                    </div>
+                  </div>
 
-              {/* Card Content body */}
-              <div className="flex flex-col justify-between grow px-1 pb-1">
-                <div className="mb-4">
-                  <h3 className="text-[18px] font-bold text-black group-hover:text-[#EF4444] transition-colors duration-300 mb-2 leading-snug">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-500 text-[13.5px] leading-relaxed line-clamp-2">
-                    {item.description}
-                  </p>
-                </div>
+                  {/* Card Content body */}
+                  <div className="flex flex-col justify-between grow p-5">
+                    <div className="mb-4">
+                      <h3 className="text-[18px] font-bold text-black group-hover:text-[#EF4444] transition-colors duration-300 mb-2 leading-snug">
+                        {item.name}
+                      </h3>
+                      <p className="text-gray-500 text-[13.5px] leading-relaxed line-clamp-2">
+                        {item.description}
+                      </p>
+                    </div>
 
-                {/* View Details arrow link */}
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-[#EF4444]">
-                  <span>View Details</span>
-                  <ArrowRight className="w-4 h-4 text-[#EF4444] transition-transform duration-300 group-hover:translate-x-1.25" />
-                </div>
-              </div>
-            </a>
-          ))}
+                    {/* View Details arrow link */}
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-[#EF4444]">
+                      <span>View Details</span>
+                      <ArrowRight className="w-4 h-4 text-[#EF4444] transition-transform duration-300 group-hover:translate-x-1.25" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })
+          )}
         </div>
 
         {/* View All Products button */}

@@ -39,6 +39,8 @@ export interface Product {
   shortDescription: string;
   fullDescription: string;
   price: string;
+  originalPrice?: number | null;
+  discountedPrice?: number | null;
   badge?: string;
   images: string[];
   size: string;
@@ -46,6 +48,7 @@ export interface Product {
   material: string;
   warranty: string;
   brochure: string;
+  model3d?: string;
   features: Feature[];
   specifications: Specification[];
   applications: Application[];

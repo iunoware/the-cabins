@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { productFamilies } from "@/src/data/products";
+// import { productFamilies } from "@/src/data/products";
 import { toast } from "sonner";
 
 // Helper for slug generation
@@ -20,6 +20,8 @@ export interface CategoryState {
   description: string;
   image: string;
   active: boolean; // true = Published, false = Draft
+  featured?: boolean;
+  badge?: string;
   updatedAt: string;
   familiesCount: number;
   productsCount: number;
@@ -84,19 +86,35 @@ interface ProductsContextType {
   families: FamilyState[];
   products: ProductState[];
   isLoading: boolean;
-  loadCategories: (search?: string, status?: string, sortBy?: string) => Promise<void>;
+  loadCategories: (
+    search?: string,
+    status?: string,
+    sortBy?: string,
+  ) => Promise<void>;
   loadFamilies: (categoryId?: string) => Promise<void>;
   loadProducts: (familyId?: string) => Promise<void>;
   // Category Actions
-  addCategory: (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => Promise<CategoryState>;
-  updateCategory: (id: string, category: Partial<CategoryState>) => Promise<void>;
+  addCategory: (
+    category: Omit<
+      CategoryState,
+      "id" | "updatedAt" | "familiesCount" | "productsCount"
+    >,
+  ) => Promise<CategoryState>;
+  updateCategory: (
+    id: string,
+    category: Partial<CategoryState>,
+  ) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   // Family Actions
-  addFamily: (family: Omit<FamilyState, "id" | "updatedAt">) => Promise<FamilyState>;
+  addFamily: (
+    family: Omit<FamilyState, "id" | "updatedAt">,
+  ) => Promise<FamilyState>;
   updateFamily: (id: string, family: Partial<FamilyState>) => Promise<void>;
   deleteFamily: (id: string) => Promise<void>;
   // Product Actions
-  addProduct: (product: Omit<ProductState, "id" | "updatedAt">) => Promise<ProductState>;
+  addProduct: (
+    product: Omit<ProductState, "id" | "updatedAt">,
+  ) => Promise<ProductState>;
   updateProduct: (id: string, product: Partial<ProductState>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   duplicateProduct: (id: string) => Promise<void>;
@@ -104,7 +122,9 @@ interface ProductsContextType {
   resetData: () => void;
 }
 
-const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
+const ProductsContext = createContext<ProductsContextType | undefined>(
+  undefined,
+);
 
 export function useProducts() {
   const context = useContext(ProductsContext);
@@ -121,7 +141,11 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch categories from live backend
-  const loadCategories = async (search = "", status = "all", sortBy = "newest") => {
+  const loadCategories = async (
+    search = "",
+    status = "all",
+    sortBy = "newest",
+  ) => {
     setIsLoading(true);
     try {
       const query = new URLSearchParams({ search, status, sortBy }).toString();
@@ -177,18 +201,19 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const init = async () => {
       setIsLoading(true);
-      await Promise.all([
-        loadCategories(),
-        loadFamilies(),
-        loadProducts()
-      ]);
+      await Promise.all([loadCategories(), loadFamilies(), loadProducts()]);
       setIsLoading(false);
     };
     init();
   }, []);
 
   // CATEGORY ACTIONS
-  const addCategory = async (category: Omit<CategoryState, "id" | "updatedAt" | "familiesCount" | "productsCount">) => {
+  const addCategory = async (
+    category: Omit<
+      CategoryState,
+      "id" | "updatedAt" | "familiesCount" | "productsCount"
+    >,
+  ) => {
     try {
       const res = await fetch("/api/admin/product-categories", {
         method: "POST",
@@ -212,7 +237,10 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateCategory = async (id: string, category: Partial<CategoryState>) => {
+  const updateCategory = async (
+    id: string,
+    category: Partial<CategoryState>,
+  ) => {
     try {
       const res = await fetch(`/api/admin/product-categories/${id}`, {
         method: "PUT",
@@ -227,7 +255,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
       const updatedCat = await res.json();
       setCategories((prev) =>
-        prev.map((cat) => (cat.id === id ? updatedCat : cat))
+        prev.map((cat) => (cat.id === id ? updatedCat : cat)),
       );
       toast.success("Category updated successfully.");
     } catch (err: any) {
@@ -297,7 +325,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
       const updatedFam = await res.json();
       setFamilies((prev) =>
-        prev.map((fam) => (fam.id === id ? updatedFam : fam))
+        prev.map((fam) => (fam.id === id ? updatedFam : fam)),
       );
       toast.success("Family series updated successfully.");
     } catch (err: any) {
@@ -328,7 +356,9 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   };
 
   // PRODUCT ACTIONS
-  const addProduct = async (product: Omit<ProductState, "id" | "updatedAt">) => {
+  const addProduct = async (
+    product: Omit<ProductState, "id" | "updatedAt">,
+  ) => {
     try {
       const res = await fetch("/api/admin/product-variants", {
         method: "POST",
@@ -367,7 +397,7 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
       const updatedProd = await res.json();
       setProducts((prev) =>
-        prev.map((prod) => (prod.id === id ? updatedProd : prod))
+        prev.map((prod) => (prod.id === id ? updatedProd : prod)),
       );
       toast.success("Product variant updated successfully.");
     } catch (err: any) {
@@ -407,7 +437,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
       // Fetch details of source variant to include specification arrays
       const detailRes = await fetch(`/api/admin/product-variants/${id}`);
-      if (!detailRes.ok) throw new Error("Failed to load details for duplication");
+      if (!detailRes.ok)
+        throw new Error("Failed to load details for duplication");
       const details = await detailRes.json();
 
       const dupPayload = {
@@ -415,10 +446,27 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         name: dupName,
         slug: dupSlug,
         images: details.images?.map((i: any) => i.imageUrl || i) || [],
-        features: details.features?.map((f: any) => ({ title: f.title, description: f.description, icon: f.icon })) || [],
-        specifications: details.specifications?.map((s: any) => ({ parameter: s.parameter, value: s.value })) || [],
-        applications: details.applications?.map((a: any) => ({ title: a.title, icon: a.icon })) || [],
-        faqs: details.faqs?.map((f: any) => ({ question: f.question, answer: f.answer })) || []
+        features:
+          details.features?.map((f: any) => ({
+            title: f.title,
+            description: f.description,
+            icon: f.icon,
+          })) || [],
+        specifications:
+          details.specifications?.map((s: any) => ({
+            parameter: s.parameter,
+            value: s.value,
+          })) || [],
+        applications:
+          details.applications?.map((a: any) => ({
+            title: a.title,
+            icon: a.icon,
+          })) || [],
+        faqs:
+          details.faqs?.map((f: any) => ({
+            question: f.question,
+            answer: f.answer,
+          })) || [],
       };
 
       delete dupPayload.id;

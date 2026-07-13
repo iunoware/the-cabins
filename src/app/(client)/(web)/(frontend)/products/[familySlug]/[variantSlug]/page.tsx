@@ -21,8 +21,8 @@ export async function generateStaticParams() {
   const variants = await prisma.productVariant.findMany({
     where: { active: true },
     include: {
-      family: true
-    }
+      family: true,
+    },
   });
   return variants.map((variant) => ({
     familySlug: variant.family.slug,
@@ -31,10 +31,12 @@ export async function generateStaticParams() {
 }
 
 // 2. SEO-friendly metadata generation
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { familySlug, variantSlug } = await params;
   const product = await prisma.productVariant.findUnique({
-    where: { slug: variantSlug, active: true }
+    where: { slug: variantSlug, active: true },
   });
 
   if (!product) {
@@ -68,14 +70,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
     where: { slug: variantSlug, active: true },
     include: {
       family: {
-        include: { category: true }
+        include: { category: true },
       },
       images: { orderBy: { sortOrder: "asc" } },
       features: { orderBy: { sortOrder: "asc" } },
       specifications: { orderBy: { sortOrder: "asc" } },
       applications: { orderBy: { sortOrder: "asc" } },
-      faqs: { orderBy: { sortOrder: "asc" } }
-    }
+      faqs: { orderBy: { sortOrder: "asc" } },
+    },
   });
 
   if (!product) {
@@ -92,18 +94,37 @@ export default async function ProductDetailPage({ params }: PageProps) {
     shortDescription: product.shortDescription || "",
     description: product.shortDescription || "",
     fullDescription: product.description || "",
-    price: product.price ? `AED ${Number(product.price).toLocaleString()}` : "Price on Enquiry",
+    price: product.price
+      ? `AED ${Number(product.price).toLocaleString()}`
+      : "Price on Enquiry",
+    originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+    discountedPrice: product.discountedPrice
+      ? Number(product.discountedPrice)
+      : null,
     size: product.dimensions || "Custom",
     capacity: product.capacity || "Varies",
     material: product.material || "Steel / Sandwich Panel",
     warranty: product.warranty || "1 Year",
     brochure: product.brochure || "",
     model3d: product.model3d || "",
-    images: product.images.length > 0 ? product.images.map(img => img.imageUrl) : [product.thumbnail],
-    features: product.features.map(f => ({ title: f.title, description: f.description, icon: f.icon || "Sparkles" })),
-    specifications: product.specifications.map(s => ({ label: s.parameter, value: s.value })),
-    applications: product.applications.map(a => ({ title: a.title, icon: a.icon || "ArrowRight" })),
-    faq: product.faqs.map(f => ({ question: f.question, answer: f.answer }))
+    images:
+      product.images.length > 0
+        ? product.images.map((img) => img.imageUrl)
+        : [product.thumbnail],
+    features: product.features.map((f) => ({
+      title: f.title,
+      description: f.description,
+      icon: f.icon || "Sparkles",
+    })),
+    specifications: product.specifications.map((s) => ({
+      label: s.parameter,
+      value: s.value,
+    })),
+    applications: product.applications.map((a) => ({
+      title: a.title,
+      icon: a.icon || "ArrowRight",
+    })),
+    faq: product.faqs.map((f) => ({ question: f.question, answer: f.answer })),
   };
 
   // Query related product families in the same category
@@ -111,40 +132,47 @@ export default async function ProductDetailPage({ params }: PageProps) {
     where: {
       categoryId: product.family.categoryId,
       active: true,
-      id: { not: product.familyId }
+      id: { not: product.familyId },
     },
     take: 3,
     include: {
       category: true,
       variants: {
-        where: { active: true }
-      }
-    }
+        where: { active: true },
+      },
+    },
   });
 
   // Pad to 3 if less
   if (dbRelatedFamilies.length < 3) {
-    const excludedIds = [product.familyId, ...dbRelatedFamilies.map((rf) => rf.id)];
+    const excludedIds = [
+      product.familyId,
+      ...dbRelatedFamilies.map((rf) => rf.id),
+    ];
     const fallbackFams = await prisma.productFamily.findMany({
       where: {
         active: true,
-        id: { notIn: excludedIds }
+        id: { notIn: excludedIds },
       },
       take: 3 - dbRelatedFamilies.length,
       include: {
         category: true,
         variants: {
-          where: { active: true }
-        }
-      }
+          where: { active: true },
+        },
+      },
     });
     dbRelatedFamilies.push(...fallbackFams);
   }
 
   const formattedRelated = dbRelatedFamilies.map((rf) => {
-    const prices = rf.variants.map((v) => v.price ? Number(v.price) : null).filter((p): p is number => p !== null);
+    const prices = rf.variants
+      .map((v) => (v.price ? Number(v.price) : null))
+      .filter((p): p is number => p !== null);
     const minPrice = prices.length > 0 ? Math.min(...prices) : null;
-    const startingPrice = minPrice ? `From AED ${minPrice.toLocaleString()}` : "Price on Enquiry";
+    const startingPrice = minPrice
+      ? `From AED ${minPrice.toLocaleString()}`
+      : "Price on Enquiry";
 
     return {
       id: rf.id,
@@ -153,7 +181,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
       category: rf.category.name,
       description: rf.shortDescription,
       images: [rf.thumbnail],
-      startingPrice
+      startingPrice,
     };
   });
 
@@ -181,12 +209,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 <p className="font-semibold text-gray-700">
                   {formattedProduct.shortDescription}
                 </p>
-                <p>
-                  {formattedProduct.fullDescription}
-                </p>
-                <p>
+                <p>{formattedProduct.fullDescription}</p>
+                {/* <p>
                   Manufactured from high-grade structural steel and premium sandwich paneling, this unit is built to endure the extreme climatic changes of the Middle East region while providing maximum thermal insulation and energy efficiency. It is pre-certified to meet standard safety and structural guidelines, making it a reliable solution for immediate project kick-offs.
-                </p>
+                </p> */}
               </div>
             </div>
           </div>
@@ -199,7 +225,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         <SpecificationTable specifications={formattedProduct.specifications} />
 
         {/* Application Cards */}
-        <ApplicationGrid applications={formattedProduct.applications} />
+        {/* <ApplicationGrid applications={formattedProduct.applications} /> */}
 
         {/* FAQ Accordion */}
         <FAQAccordion faq={formattedProduct.faq} />

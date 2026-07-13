@@ -22,6 +22,8 @@ export default function CategoryModal({
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("/images/security-cabin.png");
   const [active, setActive] = useState(true);
+  const [featured, setFeatured] = useState(false);
+  const [badge, setBadge] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   // If editId is provided, fill form with existing category data
@@ -34,12 +36,16 @@ export default function CategoryModal({
           setDescription(cat.description);
           setImage(cat.image);
           setActive(cat.active);
+          setFeatured(cat.featured || false);
+          setBadge(cat.badge || "");
         }
       } else {
         setName("");
         setDescription("");
         setImage("/images/security-cabin.png");
         setActive(true);
+        setFeatured(false);
+        setBadge("");
       }
     }
   }, [isOpen, editId, categories]);
@@ -67,6 +73,8 @@ export default function CategoryModal({
           description,
           image,
           active,
+          featured,
+          badge: badge.trim() || "",
         });
         onClose();
       } else {
@@ -76,6 +84,8 @@ export default function CategoryModal({
           description,
           image,
           active,
+          featured,
+          badge: badge.trim() || "",
         });
         if (onSaveCallback) {
           onSaveCallback(created);
@@ -223,6 +233,35 @@ export default function CategoryModal({
                   className="accent-[#e31b23] h-4.5 w-4.5"
                 />
               </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <label className={`flex items-center justify-between p-3.5 rounded-xl border border-gray-100 dark:border-zinc-855 bg-gray-50 dark:bg-zinc-800/20 select-none ${isSaving ? "opacity-50 pointer-events-none" : "cursor-pointer"}`}>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-gray-900 dark:text-gray-100">Featured</span>
+                <span className="text-[10px] text-gray-500">Show on Home</span>
+              </div>
+              <input
+                type="checkbox"
+                disabled={isSaving}
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+                className="accent-[#e31b23] h-4.5 w-4.5 cursor-pointer rounded-sm"
+              />
+            </label>
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                Badge Label (Optional)
+              </label>
+              <input
+                disabled={isSaving}
+                type="text"
+                value={badge}
+                onChange={(e) => setBadge(e.target.value)}
+                placeholder="e.g. POPULAR, NEW"
+                className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-855 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold disabled:opacity-50"
+              />
             </div>
           </div>
 

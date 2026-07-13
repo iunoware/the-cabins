@@ -88,6 +88,8 @@ export async function GET(request: Request) {
         description: cat.description || "",
         image: cat.image || "",
         active: cat.active,
+        featured: cat.featured,
+        badge: cat.badge || "",
         updatedAt: cat.updatedAt.toISOString(),
         familiesCount,
         productsCount,
@@ -118,7 +120,7 @@ export async function POST(request: Request) {
     await getRequiredCurrentUser();
 
     const body = await request.json();
-    const { name, description, image, active } = body;
+    const { name, description, image, active, featured, badge } = body;
 
     if (!name || !name.trim()) {
       return NextResponse.json(
@@ -148,6 +150,8 @@ export async function POST(request: Request) {
         description: description?.trim() || "",
         image: image || "",
         active: active !== undefined ? active : true,
+        featured: featured !== undefined ? !!featured : false,
+        badge: badge || null,
       },
     });
 
@@ -158,6 +162,8 @@ export async function POST(request: Request) {
       description: category.description || "",
       image: category.image || "",
       active: category.active,
+      featured: category.featured,
+      badge: category.badge || "",
       updatedAt: category.updatedAt.toISOString(),
       familiesCount: 0,
       productsCount: 0,

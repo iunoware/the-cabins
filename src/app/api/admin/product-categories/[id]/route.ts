@@ -29,7 +29,7 @@ export async function PUT(
     const { id } = await params;
 
     const body = await request.json();
-    const { name, description, image, active } = body;
+    const { name, description, image, active, featured, badge } = body;
 
     const category = await prisma.productCategory.findUnique({
       where: { id }
@@ -63,7 +63,9 @@ export async function PUT(
         slug,
         description: description !== undefined ? description.trim() : undefined,
         image: image !== undefined ? image : undefined,
-        active: active !== undefined ? active : undefined
+        active: active !== undefined ? active : undefined,
+        featured: featured !== undefined ? !!featured : undefined,
+        badge: badge !== undefined ? badge : undefined
       }
     });
 
@@ -97,6 +99,8 @@ export async function PUT(
       description: updated.description || "",
       image: updated.image || "",
       active: updated.active,
+      featured: updated.featured,
+      badge: updated.badge || "",
       updatedAt: updated.updatedAt.toISOString(),
       familiesCount,
       productsCount
