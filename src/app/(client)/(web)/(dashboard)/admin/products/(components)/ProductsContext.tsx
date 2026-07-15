@@ -79,6 +79,7 @@ export interface ProductState {
   originalPrice?: number;
   discountedPrice?: number;
   currency?: string;
+  attributes?: { label: string; value: string }[];
 }
 
 interface ProductsContextType {

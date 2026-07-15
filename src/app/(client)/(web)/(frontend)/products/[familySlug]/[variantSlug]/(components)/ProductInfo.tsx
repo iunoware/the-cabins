@@ -1,11 +1,52 @@
 "use client";
 
 import { useRef } from "react";
-import { Maximize2, Users, HardHat, Award, Download } from "lucide-react";
+import {
+  Ruler,
+  Users,
+  Package,
+  Shield,
+  Weight,
+  Square,
+  Layout,
+  Home,
+  DoorClosed,
+  PanelsTopLeft,
+  Info,
+  Download
+} from "lucide-react";
 import { WhatsApp } from "@/src/components/Icons";
 import { Product } from "@/src/data/products";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+
+function getIconForLabel(label: string) {
+  const normalized = label.toLowerCase().trim();
+  switch (normalized) {
+    case "size":
+      return Ruler;
+    case "capacity":
+      return Users;
+    case "material":
+      return Package;
+    case "warranty":
+      return Shield;
+    case "weight":
+      return Weight;
+    case "area":
+      return Square;
+    case "flooring":
+      return Layout;
+    case "roof":
+      return Home;
+    case "doors":
+      return DoorClosed;
+    case "windows":
+      return PanelsTopLeft;
+    default:
+      return Info;
+  }
+}
 
 interface ProductInfoProps {
   product: Product;
@@ -106,59 +147,29 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <hr className="info-fade my-6 border-gray-200" />
 
         {/* Quick Specification Cards */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {/* Card 1: Size */}
-          <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Maximize2 className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                Size
-              </span>
-            </div>
-            <span className="text-sm font-extrabold text-[#111217]">
-              {product.size}
-            </span>
+        {product.attributes && product.attributes.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            {product.attributes.map((attr, index) => {
+              const IconComponent = getIconForLabel(attr.label);
+              return (
+                <div
+                  key={index}
+                  className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200"
+                >
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <IconComponent className="w-4 h-4 text-[#E71F32]" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                      {attr.label}
+                    </span>
+                  </div>
+                  <span className="text-sm font-extrabold text-[#111217]">
+                    {attr.value}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-
-          {/* Card 2: Capacity */}
-          <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Users className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                Capacity
-              </span>
-            </div>
-            <span className="text-sm font-extrabold text-[#111217]">
-              {product.capacity}
-            </span>
-          </div>
-
-          {/* Card 3: Material */}
-          <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
-            <div className="flex items-center gap-2 text-gray-400">
-              <HardHat className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                Material
-              </span>
-            </div>
-            <span className="text-sm font-extrabold text-[#111217] line-clamp-1">
-              {product.material}
-            </span>
-          </div>
-
-          {/* Card 4: Warranty */}
-          <div className="spec-card p-4 rounded-2xl border border-gray-100 bg-gray-50/50 flex flex-col gap-2 transition hover:border-gray-200">
-            <div className="flex items-center gap-2 text-gray-400">
-              <Award className="w-4 h-4 text-[#E71F32]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                Warranty
-              </span>
-            </div>
-            <span className="text-sm font-extrabold text-[#111217]">
-              {product.warranty}
-            </span>
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">

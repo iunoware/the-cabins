@@ -74,6 +74,11 @@ export default function ProductForm({
     { parameter: string; value: string }[]
   >([]);
 
+  // Dynamic Attributes State
+  const [attributes, setAttributes] = useState<
+    { label: string; value: string }[]
+  >([]);
+
   // Features State (Chips)
   const [features, setFeatures] = useState<
     { title: string; description: string }[]
@@ -130,6 +135,7 @@ export default function ProductForm({
         setGalleryImages(prod.images || []);
         setSpecifications(prod.specifications || []);
         setFeatures(prod.features || []);
+        setAttributes(prod.attributes || []);
         setBrochureName(
           prod.brochure ? prod.brochure.split("/").pop() || "brochure.pdf" : "",
         );
@@ -161,6 +167,7 @@ export default function ProductForm({
       setDescription("");
       setCoverImage("/images/security-cabin.png");
       setGalleryImages([]);
+      setAttributes([]);
       setSpecifications([
         { parameter: "Dimensions", value: "3.00m (L) x 6.00m (W) x 2.60m (H)" },
         { parameter: "Frame", value: "Structural Steel Frame, epoxy coated" },
@@ -266,6 +273,27 @@ export default function ProductForm({
     setSpecifications((prev) => prev.filter((_, idx) => idx !== index));
   };
 
+  // 4b. Attributes manipulation
+  const addAttributeRow = () => {
+    setAttributes((prev) => [...prev, { label: "", value: "" }]);
+  };
+
+  const handleAttributeChange = (
+    index: number,
+    field: "label" | "value",
+    val: string,
+  ) => {
+    setAttributes((prev) =>
+      prev.map((item, idx) =>
+        idx === index ? { ...item, [field]: val } : item,
+      ),
+    );
+  };
+
+  const removeAttributeRow = (index: number) => {
+    setAttributes((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
   // 5. Features chips manipulation
   const addFeatureChip = () => {
     if (!newFeatureText.trim()) return;
@@ -336,6 +364,24 @@ export default function ProductForm({
       formattedPrice = `${currency} ${orig.toLocaleString()}`;
     }
 
+    const cleanedAttributes = attributes
+      .map((attr) => ({
+        label: attr.label.trim(),
+        value: attr.value.trim(),
+      }))
+      .filter((attr) => attr.label !== "" || attr.value !== "");
+
+    for (const attr of cleanedAttributes) {
+      if (attr.label === "") {
+        alert("Attribute Label is required.");
+        return;
+      }
+      if (attr.value === "") {
+        alert("Attribute Value is required.");
+        return;
+      }
+    }
+
     const payload = {
       familyId,
       name,
@@ -347,6 +393,7 @@ export default function ProductForm({
       model3d: model3dName ? `/3d-models/${model3dName}` : "",
       thumbnail: coverImage,
       images: galleryImages.length > 0 ? galleryImages : [coverImage],
+      attributes: cleanedAttributes,
       specifications: specifications.map((s: any) => ({
         parameter: s.parameter || s.label,
         value: s.value,
@@ -518,6 +565,92 @@ export default function ProductForm({
               className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-zinc-800/50 border border-gray-100 dark:border-zinc-850 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-[#e31b23]/25 focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all resize-none font-medium"
             />
           </div>
+        </section>
+
+        {/* SECTION: Product Highlights / Attributes */}
+        <section className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800/40 rounded-2xl p-6.5 shadow-xs flex flex-col gap-5">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-50 dark:border-zinc-850/50">
+            <h3 className="text-sm font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Layers size={16} className="text-[#e31b23]" />
+              Product Highlights / Attributes
+            </h3>
+            <button
+              type="button"
+              onClick={addAttributeRow}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#e31b23] hover:bg-[#ff2d35] rounded-lg transition-all shadow-xs cursor-pointer"
+            >
+              <Plus size={12} />
+              <span>Add Attribute</span>
+            </button>
+          </div>
+
+          {attributes.length === 0 ? (
+            <div className="text-center py-6 bg-gray-50 dark:bg-zinc-950/20 rounded-2xl border border-dashed border-gray-150 dark:border-zinc-800">
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold italic">
+                No product attributes added.
+              </p>
+              <button
+                type="button"
+                onClick={addAttributeRow}
+                className="mt-2 text-xs font-bold text-[#e31b23] hover:underline"
+              >
+                Add first row
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <div className="grid grid-cols-12 gap-3.5 px-2">
+                <span className="col-span-5 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+                  Label
+                </span>
+                <span className="col-span-6 text-[10px] uppercase tracking-wider font-extrabold text-gray-400 dark:text-gray-500">
+                  Value
+                </span>
+                <span className="col-span-1"></span>
+              </div>
+              {attributes.map((attr, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-12 gap-3 items-center animate-[fadeIn_0.2s_ease-out]"
+                >
+                  <div className="col-span-5">
+                    <input
+                      required
+                      type="text"
+                      value={attr.label}
+                      onChange={(e) =>
+                        handleAttributeChange(index, "label", e.target.value)
+                      }
+                      placeholder="e.g. Size"
+                      className="w-full text-xs px-3 py-2 bg-gray-50 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 rounded-xl focus:outline-hidden focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="col-span-6">
+                    <input
+                      required
+                      type="text"
+                      value={attr.value}
+                      onChange={(e) =>
+                        handleAttributeChange(index, "value", e.target.value)
+                      }
+                      placeholder="e.g. Custom"
+                      className="w-full text-xs px-3 py-2 bg-gray-50 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 rounded-xl focus:outline-hidden focus:border-[#e31b23] text-gray-900 dark:text-gray-100 transition-all font-medium"
+                    />
+                  </div>
+                  <div className="col-span-1 text-center">
+                    <button
+                      type="button"
+                      onClick={() => removeAttributeRow(index)}
+                      className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-955/20 transition-all cursor-pointer"
+                      title="Remove Row"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* SECTION: Pricing Details */}

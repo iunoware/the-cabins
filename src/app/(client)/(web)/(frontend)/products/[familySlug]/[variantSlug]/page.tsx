@@ -80,6 +80,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
     },
   });
 
+  console.log("ProductDetailPage slugs:", { familySlug, variantSlug });
+  console.log("ProductDetailPage product found:", product ? product.name : "null");
+
   if (!product) {
     notFound();
   }
@@ -105,6 +108,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
     capacity: product.capacity || "Varies",
     material: product.material || "Steel / Sandwich Panel",
     warranty: product.warranty || "1 Year",
+    attributes: (product.attributes as any) || [],
     brochure: product.brochure || "",
     model3d: product.model3d || "",
     images:
@@ -219,7 +223,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </section>
 
         {/* Features Grid */}
-        <FeatureGrid features={formattedProduct.features} />
+        {/* <FeatureGrid features={formattedProduct.features} /> */}
 
         {/* Technical Specification Table */}
         <SpecificationTable specifications={formattedProduct.specifications} />
