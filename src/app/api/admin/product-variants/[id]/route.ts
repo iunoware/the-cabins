@@ -85,6 +85,7 @@ export async function GET(
       metaDescription: variant.metaDescription || "",
       keywords: variant.keywords || "",
       ogImage: variant.ogImage || "",
+      attributes: (variant.attributes as any) || [],
       thumbnail: variant.thumbnail,
       featured: variant.featured,
       active: variant.active,
@@ -143,6 +144,7 @@ export async function PATCH(
       metaDescription,
       keywords,
       ogImage,
+      attributes,
       images,
       features,
       specifications,
@@ -237,6 +239,7 @@ export async function PATCH(
           metaDescription: metaDescription !== undefined ? metaDescription : undefined,
           keywords: keywords !== undefined ? keywords : undefined,
           ogImage: ogImage !== undefined ? ogImage : undefined,
+          attributes: attributes !== undefined ? attributes : undefined,
           featured: featured !== undefined ? !!featured : undefined,
           active: active !== undefined ? !!active : undefined,
           sortOrder: sortOrder !== undefined ? parseInt(sortOrder, 10) : undefined

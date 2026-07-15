@@ -237,6 +237,7 @@ model ProductVariant {
   metaDescription  String?  @db.Text
   keywords         String?  @db.Text
   ogImage          String?
+  attributes       Json     @default("[]")
   thumbnail        String
   featured         Boolean  @default(false)
   active           Boolean  @default(true)

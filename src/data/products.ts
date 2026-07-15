@@ -43,6 +43,7 @@ export interface Product {
   discountedPrice?: number | null;
   badge?: string;
   images: string[];
+  attributes?: { label: string; value: string }[];
   size: string;
   capacity: string;
   material: string;
